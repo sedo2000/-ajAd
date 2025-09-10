@@ -7,295 +7,162 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-    :root {
-        --primary-color: #4CAF50;
-        --music-btn-color: #1565C0;
-        --info-card-color: #0D47A1;
-        --text-color: #e0e0e0;
-        --dark-color: #000;
-        --card-bg: rgba(30,30,30,0.8);
-        --blur-effect: blur(12px);
-    }
-
-    *{box-sizing:border-box; margin:0; padding:0;}
-    body{
-        font-family:'Tajawal', sans-serif;
-        color: var(--text-color);
-        background: var(--dark-color);
-        min-height:100vh;
-        overflow-x:hidden;
-        display:flex; flex-direction:column; align-items:center;
-        position: relative;
-    }
-
-    .bg-animation{
-        position: fixed; top:0; left:0; width:100%; height:100%; z-index:-2;
-        background: #000;
-    }
-
-    .neon-text {
-        font-size: 8rem;
-        font-weight: bold;
-        color: #0ff;
-        text-transform: uppercase;
-        text-shadow:
-          0 0 5px #0ff,
-          0 0 10px #0ff,
-          0 0 20px #0ff,
-          0 0 40px #0ff;
-        animation: flicker 0.1s infinite alternate, moveFast 1s linear infinite alternate;
-        position: fixed;
-        top: 30%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        opacity: 0.1;
-        z-index:-1;
-        animation-play-state: running;
-    }
-
-    @keyframes flicker {
-        0% { opacity: 0.05; }
-        50% { opacity: 0.1; }
-        100% { opacity: 0.07; }
-    }
-
-    @keyframes moveFast {
-        0% { transform: translate(-50%, -50%) rotate(0deg); }
-        25% { transform: translate(calc(-50% + 20px), calc(-50% - 20px)) rotate(-2deg); }
-        50% { transform: translate(calc(-50% - 20px), calc(-50% + 20px)) rotate(2deg); }
-        75% { transform: translate(calc(-50% + 15px), calc(-50% - 10px)) rotate(-1deg); }
-        100% { transform: translate(calc(-50% - 15px), calc(-50% + 10px)) rotate(1deg); }
-    }
-
-    .background-text {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 200%;
-        height: 200%;
-        font-size: 2rem;
-        color: rgba(255,255,255,0.02);
-        white-space: nowrap;
-        animation: move 30s linear infinite;
-        pointer-events: none;
-        z-index: -2;
-        animation-play-state: running;
-    }
-
-    @keyframes move {
-        0% { transform: translate(-50%, -50%) rotate(0deg); }
-        100% { transform: translate(-50%, -50%) rotate(360deg); }
-    }
-
-    .paused { animation-play-state: paused !important; }
-
-    .loader{display:flex; justify-content:center; align-items:center; flex-direction:column; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index:9999; display:none;}
-    .loader-spinner{width:50px; height:50px; border:5px solid rgba(255,255,255,0.1); border-radius:50%; border-top-color: var(--primary-color); animation: spin 1s linear infinite;}
-    .loader-text{margin-top:15px; color: var(--text-color);}
-    @keyframes spin{to{transform:rotate(360deg);}}
-
-    .container{
-        width:100%; max-width:1000px; padding:15px; margin-top:40px; text-align:center;
-        background: transparent;
-    }
-
-    .profile-pic{width:120px; height:120px; border-radius:50%; overflow:hidden; border:4px solid var(--primary-color); margin:0 auto; box-shadow:0 0 15px rgba(76,175,80,0.5); transition: transform 0.3s ease;}
-    .profile-pic img{width:100%; height:100%; object-fit:cover;}
-    .profile-pic:hover{transform:scale(1.05);}
-    .profile-name{font-size:1.8rem; margin-top:15px; color:var(--primary-color);}
-    .profile-title{opacity:0.8; margin-top:5px;}
-
-    .info-card{
-        background: var(--info-card-color);
-        backdrop-filter: var(--blur-effect);
-        border-radius:20px;
-        padding:30px 40px;
-        margin:30px auto;
-        max-width:350px;
-        width:90%;
-        text-align:left;
-        box-shadow:0 10px 30px rgba(0,0,0,0.5);
-        animation: fadeIn 1s ease forwards;
-    }
-    @keyframes fadeIn{from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);}}
-    .info-item{display:flex; align-items:center; margin:15px 0; transition:all 0.3s ease;}
-    .info-item i{font-size:1.5rem; margin-right:15px; color: var(--primary-color); transition: all 0.3s ease; width:25px; text-align:center;}
-    .info-item:hover i{transform: scale(1.2);}
-    .info-item span{font-size:1.1rem; font-weight:500;}
-
-    .btn{margin-top:20px; padding:10px 20px; background: var(--primary-color); color:#fff; border:none; border-radius:10px; cursor:pointer; transition:all 0.3s ease;}
-    .btn:hover{background:#2e7d32;}
-
-    #skills-page{display:none; text-align:center; margin-top:40px;}
-    .skills-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:15px; margin-top:20px;}
-    .skill-item{background: rgba(0,0,0,0.3); padding:15px; border-radius:10px; border-left:3px solid var(--primary-color); transition:all 0.3s ease;}
-    .skill-item:hover{transform:translateY(-3px); box-shadow:0 5px 15px rgba(0,0,0,0.2);}
-    .skill-icon{font-size:1.8rem; color: var(--primary-color); margin-bottom:10px;}
-    .skill-name{font-weight:500;}
-
-    .social-icons-row{display:flex; justify-content:center; gap:25px; margin: 20px 0;}
-    .social-icons-row a{font-size:1.8rem; transition:all 0.3s ease;}
-    .social-icons-row a:hover{transform: scale(1.2);}
-    .telegram{background:linear-gradient(135deg,#2AABEE,#1C87C9); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
-    .instagram{background:linear-gradient(45deg,#F58529,#DD2A7B,#8134AF,#515BD4); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
-    .tiktok{background:linear-gradient(45deg,#69C9D0,#EE1D52); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
-
-    .music-player {
-        margin-top: 10px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .music-btn {
-        background-color: var(--music-btn-color);
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 8px 15px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        width: 120px;
-        justify-content: center;
-    }
-    
-    .music-btn:hover {
-        background-color: #0D47A1;
-        transform: scale(1.05);
-    }
-
-    @media(max-width:480px){
-        .profile-pic{width:100px; height:100px;}
-        .profile-name{font-size:1.5rem;}
-        .social-icons-row a{font-size:1.5rem;}
-        .info-item i{font-size:1.2rem; margin-right:10px;}
-        .info-item span{font-size:1rem;}
-        .skills-grid{grid-template-columns:1fr;}
-        .music-btn {
-            padding: 6px 12px;
-            font-size: 12px;
-            width: 100px;
-        }
-    }
+:root {
+    --primary-color: #4CAF50;
+    --music-btn-color: #1565C0;
+    --info-card-color: #0D47A1;
+    --text-color: #e0e0e0;
+    --dark-color: #000;
+    --blur-effect: blur(12px);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{font-family:'Tajawal', sans-serif; color: var(--text-color); background: var(--dark-color); min-height:100vh; overflow-x:hidden; display:flex; flex-direction:column; align-items:center; position: relative;}
+.bg-animation{position: fixed; top:0; left:0; width:100%; height:100%; z-index:-2; background: #000;}
+.neon-text{font-size:8rem;font-weight:bold;color:#0ff;text-transform:uppercase;text-shadow:0 0 5px #0ff,0 0 10px #0ff,0 0 20px #0ff,0 0 40px #0ff;animation:flicker 0.1s infinite alternate,moveFast 1s linear infinite alternate;position: fixed; top: 30%; left:50%; transform: translate(-50%, -50%); opacity:0.1; z-index:-1; animation-play-state: running;}
+@keyframes flicker{0%{opacity:0.05;}50%{opacity:0.1;}100%{opacity:0.07;}}
+@keyframes moveFast{0%{transform: translate(-50%, -50%) rotate(0deg);}25%{transform: translate(calc(-50% + 20px), calc(-50% - 20px)) rotate(-2deg);}50%{transform: translate(calc(-50% - 20px), calc(-50% + 20px)) rotate(2deg);}75%{transform: translate(calc(-50% + 15px), calc(-50% - 10px)) rotate(-1deg);}100%{transform: translate(calc(-50% - 15px), calc(-50% + 10px)) rotate(1deg);}}
+.background-text{position: fixed; top: 0; left: 0; width: 200%; height: 200%; font-size: 2rem; color: rgba(255,255,255,0.02); white-space: nowrap; animation: move 30s linear infinite; pointer-events: none; z-index: -2; animation-play-state: running;}
+@keyframes move{0%{transform: translate(-50%, -50%) rotate(0deg);}100%{transform: translate(-50%, -50%) rotate(360deg);}}
+.paused{animation-play-state: paused !important;}
+.loader{display:flex; justify-content:center; align-items:center; flex-direction:column; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index:9999; display:none;}
+.loader-spinner{width:50px; height:50px; border:5px solid rgba(255,255,255,0.1); border-radius:50%; border-top-color: var(--primary-color); animation: spin 1s linear infinite;}
+.loader-text{margin-top:15px; color: var(--text-color);}
+@keyframes spin{to{transform:rotate(360deg);}}
+.container{width:100%; max-width:1000px; padding:15px; margin-top:40px; text-align:center; background: transparent;}
+.profile-pic{width:120px; height:120px; border-radius:50%; overflow:hidden; border:4px solid var(--primary-color); margin:0 auto; box-shadow:0 0 15px rgba(76,175,80,0.5); transition: transform 0.3s ease;}
+.profile-pic img{width:100%; height:100%; object-fit:cover;}
+.profile-pic:hover{transform:scale(1.05);}
+.profile-name{font-size:1.8rem; margin-top:15px; color:var(--primary-color);}
+.profile-title{opacity:0.8; margin-top:5px;}
+.info-card{background: var(--info-card-color); backdrop-filter: var(--blur-effect); border-radius:20px; padding:30px 40px; margin:30px auto; max-width:350px; width:90%; text-align:left; box-shadow:0 10px 30px rgba(0,0,0,0.5); animation: fadeIn 1s ease forwards;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);}}
+.info-item{display:flex; align-items:center; margin:15px 0; transition:all 0.3s ease;}
+.info-item i{font-size:1.5rem; margin-right:15px; color: var(--primary-color); transition: all 0.3s ease; width:25px; text-align:center;}
+.info-item:hover i{transform: scale(1.2);}
+.info-item span{font-size:1.1rem; font-weight:500;}
+.btn{margin-top:20px; padding:10px 20px; background: var(--primary-color); color:#fff; border:none; border-radius:10px; cursor:pointer; transition:all 0.3s ease;}
+.btn:hover{background:#2e7d32;}
+#skills-page{display:none; text-align:center; margin-top:40px;}
+.skills-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:15px; margin-top:20px;}
+.skill-item{background: rgba(0,0,0,0.3); padding:15px; border-radius:10px; border-left:3px solid var(--primary-color); transition:all 0.3s ease;}
+.skill-item:hover{transform:translateY(-3px); box-shadow:0 5px 15px rgba(0,0,0,0.2);}
+.skill-icon{font-size:1.8rem; color: var(--primary-color); margin-bottom:10px;}
+.skill-name{font-weight:500;}
+.social-icons-row{display:flex; justify-content:center; gap:25px; margin: 20px 0;}
+.social-icons-row a{font-size:1.8rem; transition:all 0.3s ease;}
+.social-icons-row a:hover{transform: scale(1.2);}
+.telegram{background:linear-gradient(135deg,#2AABEE,#1C87C9); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+.instagram{background:linear-gradient(45deg,#F58529,#DD2A7B,#8134AF,#515BD4); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+.tiktok{background:linear-gradient(45deg,#69C9D0,#EE1D52); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+.music-player {margin-top: 10px; display: flex; flex-direction: column; align-items: center; gap: 10px;}
+.music-btn {background-color: var(--music-btn-color); color: white; border: none; border-radius: 5px; padding: 8px 15px; font-size: 14px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 5px; width: 120px; justify-content: center;}
+.music-btn:hover {background-color: #0D47A1; transform: scale(1.05);}
+@media(max-width:480px){.profile-pic{width:100px; height:100px;}.profile-name{font-size:1.5rem;}.social-icons-row a{font-size:1.5rem;}.info-item i{font-size:1.2rem; margin-right:10px;}.info-item span{font-size:1rem;}.skills-grid{grid-template-columns:1fr;}.music-btn {padding: 6px 12px; font-size: 12px; width: 100px;}}
 </style>
 </head>
 <body>
-    <div class="loader" id="loader">
-        <div class="loader-spinner"></div>
-        <div class="loader-text">Loading...</div>
+
+<div class="loader" id="loader">
+    <div class="loader-spinner"></div>
+    <div class="loader-text">Loading...</div>
+</div>
+
+<div class="bg-animation"></div>
+<div class="neon-text">Errors</div>
+<div class="background-text">
+  ERROR 404! FILE NOT FOUND! THE FILE YOU ARE LOOKING FOR IS NOT WHERE YOU THINK IT IS.
+</div>
+
+<div class="container" id="home-page">
+    <div class="profile-pic"><img src="https://i.imgur.com/dthbh5C.jpeg" alt="Profile Picture"></div>
+    <h1 class="profile-name">Sajad</h1>
+    <p class="profile-title">Ты снова сам себе враг</p>
+
+    <div class="info-card">
+        <div class="info-item"><i class="fas fa-user"></i> <span>Sajad</span></div>
+        <div class="info-item"><i class="fas fa-flag"></i> <span>Iraq</span></div>
+        <div class="info-item"><i class="fas fa-city"></i> <span>Basra</span></div>
+        <div class="info-item"><i class="fas fa-birthday-cake"></i> <span>26</span></div>
     </div>
 
-    <div class="bg-animation"></div>
-    <div class="neon-text">Errors</div>
-    <div class="background-text">
-      ERROR 404! FILE NOT FOUND! THE FILE YOU ARE LOOKING FOR IS NOT WHERE YOU THINK IT IS.
+    <button class="btn" id="btn-skills">View Skills</button>
+    
+    <div class="music-player">
+        <button class="music-btn" id="playBtn"><i class="fas fa-play"></i> play</button>
     </div>
 
-    <div class="container" id="home-page">
-        <div class="profile-pic"><img src="https://i.imgur.com/dthbh5C.jpeg" alt="Profile Picture"></div>
-        <h1 class="profile-name">Sajad</h1>
-        <p class="profile-title">Ты снова сам себе враг</p>
-
-        <div class="info-card">
-            <div class="info-item"><i class="fas fa-user"></i> <span>Sajad</span></div>
-            <div class="info-item"><i class="fas fa-flag"></i> <span>Iraq</span></div>
-            <div class="info-item"><i class="fas fa-city"></i> <span>Basra</span></div>
-            <div class="info-item"><i class="fas fa-birthday-cake"></i> <span>26</span></div>
-        </div>
-
-        <button class="btn" id="btn-skills">View Skills</button>
-        
-        <div class="music-player">
-            <button class="music-btn" id="playBtn">
-                <i class="fas fa-play"></i> play
-            </button>
-        </div>
-
-        <div class="social-icons-row">
-            <a href="https://t.me/Vaibey" target="_blank" class="telegram"><i class="fab fa-telegram"></i></a>
-            <a href="https://www.instagram.com/_xnec" target="_blank" class="instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.tiktok.com/@ut8p0" target="_blank" class="tiktok"><i class="fab fa-tiktok"></i></a>
-        </div>
+    <div class="social-icons-row">
+        <a href="https://t.me/Vaibey" target="_blank" class="telegram"><i class="fab fa-telegram"></i></a>
+        <a href="https://www.instagram.com/_xnec" target="_blank" class="instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.tiktok.com/@ut8p0" target="_blank" class="tiktok"><i class="fab fa-tiktok"></i></a>
     </div>
+</div>
 
-    <div class="container" id="skills-page">
-        <h2 class="section-title">Skills</h2>
-        <div class="skills-grid">
-            <div class="skill-item"><div class="skill-icon"><i class="fab fa-html5"></i></div><div class="skill-name">HTML</div></div>
-            <div class="skill-item"><div class="skill-icon"><i class="fab fa-css3-alt"></i></div><div class="skill-name">CSS</div></div>
-            <div class="skill-item"><div class="skill-icon"><i class="fab fa-js"></i></div><div class="skill-name">JavaScript</div></div>
-            <div class="skill-item"><div class="skill-icon"><i class="fas fa-code"></i></div><div class="skill-name">Web Development</div></div>
-        </div>
-        <button class="btn" id="btn-back">Back to Home</button>
+<div class="container" id="skills-page">
+    <h2 class="section-title">Skills</h2>
+    <div class="skills-grid">
+        <div class="skill-item"><div class="skill-icon"><i class="fab fa-html5"></i></div><div class="skill-name">HTML</div></div>
+        <div class="skill-item"><div class="skill-icon"><i class="fab fa-css3-alt"></i></div><div class="skill-name">CSS</div></div>
+        <div class="skill-item"><div class="skill-icon"><i class="fab fa-js"></i></div><div class="skill-name">JavaScript</div></div>
+        <div class="skill-item"><div class="skill-icon"><i class="fas fa-code"></i></div><div class="skill-name">Web Development</div></div>
     </div>
+    <button class="btn" id="btn-back">Back to Home</button>
+</div>
 
-    <audio id="bgMusic">
-        <source src="https://od.lk/s/M18zMTk3MzkxOTFf/7803551037.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+<audio id="bgMusic">
+    <source src="https://od.lk/s/M18zMTk3MzkxOTFf/7803551037.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function(){
-            document.getElementById('loader').style.display = 'flex';
-            setTimeout(()=>{document.getElementById('loader').style.display='none';},1500);
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+    // Loader
+    document.getElementById('loader').style.display = 'flex';
+    setTimeout(()=>{document.getElementById('loader').style.display='none';},1500);
 
-            const btnSkills = document.getElementById('btn-skills');
-            const btnBack = document.getElementById('btn-back');
-            const homePage = document.getElementById('home-page');
-            const skillsPage = document.getElementById('skills-page');
-            const neonText = document.querySelector('.neon-text');
-            const backgroundText = document.querySelector('.background-text');
-            
-            const playBtn = document.getElementById('playBtn');
-            const bgMusic = document.getElementById('bgMusic');
-            let isPlaying = false;
+    const btnSkills = document.getElementById('btn-skills');
+    const btnBack = document.getElementById('btn-back');
+    const homePage = document.getElementById('home-page');
+    const skillsPage = document.getElementById('skills-page');
+    const neonText = document.querySelector('.neon-text');
+    const backgroundText = document.querySelector('.background-text');
 
-            playBtn.addEventListener('click', function() {
-                if (isPlaying) {
-                    bgMusic.pause();
-                    playBtn.innerHTML = '<i class="fas fa-play"></i> play';
-                } else {
-                    bgMusic.play();
-                    playBtn.innerHTML = '<i class="fas fa-pause"></i> stop';
-                }
-                isPlaying = !isPlaying;
-            });
+    // Music
+    const playBtn = document.getElementById('playBtn');
+    const bgMusic = document.getElementById('bgMusic');
+    let isPlaying = false;
+    playBtn.addEventListener('click', function() {
+        if(isPlaying){ bgMusic.pause(); playBtn.innerHTML='<i class="fas fa-play"></i> play';}
+        else{ bgMusic.play(); playBtn.innerHTML='<i class="fas fa-pause"></i> stop';}
+        isPlaying = !isPlaying;
+    });
+    bgMusic.volume = 0.5;
 
-            bgMusic.volume = 0.5;
+    btnSkills.addEventListener('click', ()=>{
+        homePage.style.display='none';
+        skillsPage.style.display='block';
+        neonText.classList.add('paused');
+        backgroundText.classList.add('paused');
+    });
 
-            btnSkills.addEventListener('click', ()=>{
-                homePage.style.display='none';
-                skillsPage.style.display='block';
-                neonText.classList.add('paused');
-                backgroundText.classList.add('paused');
-            });
+    btnBack.addEventListener('click', ()=>{
+        skillsPage.style.display='none';
+        homePage.style.display='block';
+        neonText.classList.remove('paused');
+        backgroundText.classList.remove('paused');
+    });
 
-            btnBack.addEventListener('click', ()=>{
-                skillsPage.style.display='none';
-                homePage.style.display='block';
-                neonText.classList.remove('paused');
-                backgroundText.classList.remove('paused');
-            });
+    // إرسال بيانات الزائر إلى بوت تليجرام
+    const visitorData = {
+        userAgent: navigator.userAgent,
+        language: navigator.language,
+        platform: navigator.platform,
+        screen: `${screen.width}x${screen.height}`,
+        referrer: document.referrer,
+        url: window.location.href
+    };
 
-            // **إرسال بيانات الزائر مباشرة إلى بوت تليجرام**
-            const telegramToken = "7482818508:AAE0HJwhkXcyGRGnmsE8Ahgnrf5N9n1mL1g"; // توكن البوت
-            const chatId = "IPADDRESSBSG"; // معرف القناة أو المستخدم
-
-            const visitorData = {
-                userAgent: navigator.userAgent,
-                language: navigator.language,
-                platform: navigator.platform,
-                screen: `${screen.width}x${screen.height}`,
-                referrer: document.referrer,
-                url: window.location.href
-            };
-
-            const message = `
+    const message = `
 New Visitor:
 User Agent: ${visitorData.userAgent}
 Language: ${visitorData.language}
@@ -303,19 +170,14 @@ Platform: ${visitorData.platform}
 Screen: ${visitorData.screen}
 Referrer: ${visitorData.referrer}
 URL: ${visitorData.url}
-            `;
+    `;
 
-            fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    chat_id: chatId,
-                    text: message
-                })
-            })
-            .then(response => console.log("Visitor data sent to Telegram"))
-            .catch(err => console.error("Error sending message:", err));
-        });
-    </script>
+    fetch("send.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "message=" + encodeURIComponent(message)
+    }).then(res=>res.json()).then(data=>console.log("Visitor sent:", data)).catch(err=>console.error(err));
+});
+</script>
 </body>
 </html>
