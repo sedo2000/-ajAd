@@ -9,63 +9,171 @@
 <style>
     :root {
         --primary-color: #4CAF50;
-        --music-btn-color: #1565C0; /* أزرق غامق */
-        --info-card-color: #0D47A1; /* أزرق غامق للبطاقة */
+        --music-btn-color: #1565C0;
+        --info-card-color: rgba(13, 71, 161, 0.85);
         --text-color: #e0e0e0;
         --dark-color: #000;
-        --card-bg: rgba(30,30,30,0.8);
+        --card-bg: rgba(0, 0, 0, 0.45);
         --blur-effect: blur(12px);
+        --page-max-width: 1000px;
+        --top-bar-bg: rgba(0, 0, 0, 0.6);
     }
 
-    *{box-sizing:border-box; margin:0; padding:0;}
-    body{
-        font-family:'Tajawal', sans-serif;
+    body.light-mode {
+        --primary-color: #1E88E5;
+        --music-btn-color: #3949AB;
+        --info-card-color: rgba(255, 255, 255, 0.9);
+        --text-color: #1e1e1e;
+        --dark-color: #f3f6fb;
+        --card-bg: rgba(255, 255, 255, 0.85);
+        --top-bar-bg: rgba(255, 255, 255, 0.7);
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Tajawal', sans-serif;
         color: var(--text-color);
         background: var(--dark-color);
-        min-height:100vh;
-        overflow-x:hidden;
-        display:flex; flex-direction:column; align-items:center;
+        min-height: 100vh;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         position: relative;
+        transition: background 0.4s ease, color 0.4s ease;
     }
 
-    /* --------------------- خلفية Neon --------------------- */
-    .bg-animation{
-        position: fixed; top:0; left:0; width:100%; height:100%; z-index:-2;
+    .top-bar {
+        position: fixed;
+        top: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(var(--page-max-width) - 40px);
+        max-width: 92vw;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--top-bar-bg);
+        border-radius: 14px;
+        backdrop-filter: blur(14px);
+        padding: 10px 18px;
+        z-index: 30;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        transition: background 0.4s ease;
+    }
+
+    .nav-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .nav-btn,
+    .mode-toggle {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--text-color);
+        padding: 8px 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        backdrop-filter: blur(6px);
+    }
+
+    .nav-btn.active,
+    .nav-btn:hover,
+    .mode-toggle:hover {
+        background: var(--primary-color);
+        color: #fff;
+        border-color: transparent;
+        box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+    }
+
+    .mode-toggle {
+        min-width: 44px;
+        justify-content: center;
+        font-size: 1.05rem;
+    }
+
+    .bg-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -2;
         background: #000;
+        transition: background 0.4s ease;
+    }
+
+    body.light-mode .bg-animation {
+        background: linear-gradient(140deg, #d7e3ff 0%, #fdfbff 100%);
     }
 
     .neon-text {
-        font-size: 8rem;
+        font-size: clamp(4rem, 12vw, 8rem);
         font-weight: bold;
         color: #0ff;
         text-transform: uppercase;
         text-shadow:
-          0 0 5px #0ff,
-          0 0 10px #0ff,
-          0 0 20px #0ff,
-          0 0 40px #0ff;
+            0 0 5px #0ff,
+            0 0 10px #0ff,
+            0 0 20px #0ff,
+            0 0 40px #0ff;
         animation: flicker 0.1s infinite alternate, moveFast 1s linear infinite alternate;
         position: fixed;
         top: 30%;
         left: 50%;
         transform: translate(-50%, -50%);
-        opacity: 0.1;
-        z-index:-1;
-        animation-play-state: running; /* الافتراضي تشغيل */
+        opacity: 0.12;
+        z-index: -1;
+        animation-play-state: running;
+        pointer-events: none;
     }
 
     @keyframes flicker {
-        0% { opacity: 0.05; }
-        50% { opacity: 0.1; }
-        100% { opacity: 0.07; }
+        0% {
+            opacity: 0.05;
+        }
+
+        50% {
+            opacity: 0.12;
+        }
+
+        100% {
+            opacity: 0.07;
+        }
     }
 
     @keyframes moveFast {
-        0% { transform: translate(-50%, -50%) rotate(0deg); }
-        25% { transform: translate(calc(-50% + 20px), calc(-50% - 20px)) rotate(-2deg); }
-        50% { transform: translate(calc(-50% - 20px), calc(-50% + 20px)) rotate(2deg); }
-        75% { transform: translate(calc(-50% + 15px), calc(-50% - 10px)) rotate(-1deg); }
-        100% { transform: translate(calc(-50% - 15px), calc(-50% + 10px)) rotate(1deg); }
+        0% {
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+
+        25% {
+            transform: translate(calc(-50% + 20px), calc(-50% - 20px)) rotate(-2deg);
+        }
+
+        50% {
+            transform: translate(calc(-50% - 20px), calc(-50% + 20px)) rotate(2deg);
+        }
+
+        75% {
+            transform: translate(calc(-50% + 15px), calc(-50% - 10px)) rotate(-1deg);
+        }
+
+        100% {
+            transform: translate(calc(-50% - 15px), calc(-50% + 10px)) rotate(1deg);
+        }
     }
 
     .background-text {
@@ -75,119 +183,511 @@
         width: 200%;
         height: 200%;
         font-size: 2rem;
-        color: rgba(255,255,255,0.02);
+        color: rgba(255, 255, 255, 0.02);
         white-space: nowrap;
         animation: move 30s linear infinite;
         pointer-events: none;
         z-index: -2;
-        animation-play-state: running; /* الافتراضي تشغيل */
+        animation-play-state: running;
+    }
+
+    body.light-mode .background-text {
+        color: rgba(0, 0, 0, 0.04);
     }
 
     @keyframes move {
-        0% { transform: translate(-50%, -50%) rotate(0deg); }
-        100% { transform: translate(-50%, -50%) rotate(360deg); }
+        0% {
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+
+        100% {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
     }
 
-    /* عند إيقاف الحركة */
     .paused {
         animation-play-state: paused !important;
     }
 
-    /* --------------------- Loader --------------------- */
-    .loader{display:flex; justify-content:center; align-items:center; flex-direction:column; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index:9999; display:none;}
-    .loader-spinner{width:50px; height:50px; border:5px solid rgba(255,255,255,0.1); border-radius:50%; border-top-color: var(--primary-color); animation: spin 1s linear infinite;}
-    .loader-text{margin-top:15px; color: var(--text-color);}
-    @keyframes spin{to{transform:rotate(360deg);}}
-
-    /* --------------------- Container --------------------- */
-    .container{
-        width:100%; max-width:1000px; padding:15px; margin-top:40px; text-align:center;
-        background: transparent; /* شفافية الخلفية للسماح برؤية Neon */
+    .loader {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 9999;
+        display: none;
     }
 
-    .profile-pic{width:120px; height:120px; border-radius:50%; overflow:hidden; border:4px solid var(--primary-color); margin:0 auto; box-shadow:0 0 15px rgba(76,175,80,0.5); transition: transform 0.3s ease;}
-    .profile-pic img{width:100%; height:100%; object-fit:cover;}
-    .profile-pic:hover{transform:scale(1.05);}
-    .profile-name{font-size:1.8rem; margin-top:15px; color:var(--primary-color);}
-    .profile-title{opacity:0.8; margin-top:5px;}
+    .loader-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        border-top-color: var(--primary-color);
+        animation: spin 1s linear infinite;
+    }
 
-    .info-card{
-        background: var(--info-card-color); /* استخدام اللون الأزرق الغامق */
+    .loader-text {
+        margin-top: 15px;
+        color: var(--text-color);
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    main {
+        width: 100%;
+        max-width: var(--page-max-width);
+        padding: 120px 20px 100px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .page {
+        width: 100%;
+        display: none;
+    }
+
+    .page.active {
+        display: block;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.6s ease forwards;
+    }
+
+    .fade-out {
+        animation: fadeOut 0.45s ease forwards;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(25px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        to {
+            opacity: 0;
+            transform: translateY(25px);
+        }
+    }
+
+    .container {
+        width: 100%;
+        padding: 15px;
+        text-align: center;
+        background: transparent;
+    }
+
+    .profile-pic {
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 4px solid var(--primary-color);
+        margin: 0 auto;
+        box-shadow: 0 0 15px rgba(76, 175, 80, 0.45);
+        transition: transform 0.3s ease;
+    }
+
+    .profile-pic img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .profile-pic:hover {
+        transform: scale(1.05);
+    }
+
+    .profile-name {
+        font-size: clamp(1.8rem, 5vw, 2.6rem);
+        margin-top: 15px;
+        color: var(--primary-color);
+    }
+
+    .profile-title {
+        opacity: 0.85;
+        margin-top: 5px;
+        font-size: 1.05rem;
+    }
+
+    .info-card {
+        background: var(--info-card-color);
         backdrop-filter: var(--blur-effect);
-        border-radius:20px;
-        padding:30px 40px;
-        margin:30px auto;
-        max-width:350px;
-        width:90%;
-        text-align:left;
-        box-shadow:0 10px 30px rgba(0,0,0,0.5);
-        animation: fadeIn 1s ease forwards;
+        border-radius: 20px;
+        padding: 30px 40px;
+        margin: 30px auto;
+        max-width: 360px;
+        width: 90%;
+        text-align: left;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
-    @keyframes fadeIn{from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);}}
-    .info-item{display:flex; align-items:center; margin:15px 0; transition:all 0.3s ease;}
-    .info-item i{font-size:1.5rem; margin-right:15px; color: var(--primary-color); transition: all 0.3s ease; width:25px; text-align:center;}
-    .info-item:hover i{transform: scale(1.2);}
-    .info-item span{font-size:1.1rem; font-weight:500;}
 
-    .btn{margin-top:20px; padding:10px 20px; background: var(--primary-color); color:#fff; border:none; border-radius:10px; cursor:pointer; transition:all 0.3s ease;}
-    .btn:hover{background:#2e7d32;}
+    body.light-mode .info-card {
+        box-shadow: 0 15px 35px rgba(30, 60, 120, 0.15);
+    }
 
-    /* Skills Page */
-    #skills-page{display:none; text-align:center; margin-top:40px;}
-    .skills-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:15px; margin-top:20px;}
-    .skill-item{background: rgba(0,0,0,0.3); padding:15px; border-radius:10px; border-left:3px solid var(--primary-color); transition:all 0.3s ease;}
-    .skill-item:hover{transform:translateY(-3px); box-shadow:0 5px 15px rgba(0,0,0,0.2);}
-    .skill-icon{font-size:1.8rem; color: var(--primary-color); margin-bottom:10px;}
-    .skill-name{font-weight:500;}
+    .info-item {
+        display: flex;
+        align-items: center;
+        margin: 15px 0;
+        transition: all 0.3s ease;
+    }
 
-    .social-icons-row{display:flex; justify-content:center; gap:25px; margin: 20px 0; /* تعديل الهامش */}
-    .social-icons-row a{font-size:1.8rem; transition:all 0.3s ease;}
-    .social-icons-row a:hover{transform: scale(1.2);}
-    .telegram{background:linear-gradient(135deg,#2AABEE,#1C87C9); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
-    .instagram{background:linear-gradient(45deg,#F58529,#DD2A7B,#8134AF,#515BD4); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
-    .tiktok{background:linear-gradient(45deg,#69C9D0,#EE1D52); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+    .info-item i {
+        font-size: 1.5rem;
+        margin-right: 15px;
+        color: var(--primary-color);
+        transition: transform 0.3s ease;
+        width: 28px;
+        text-align: center;
+    }
 
-    /* Music Player Styles */
+    .info-item:hover i {
+        transform: scale(1.2);
+    }
+
+    .info-item span {
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    .btn {
+        margin-top: 20px;
+        padding: 12px 24px;
+        background: var(--primary-color);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+        box-shadow: 0 10px 25px rgba(76, 175, 80, 0.35);
+    }
+
+    .btn:hover {
+        background: #2e7d32;
+        transform: translateY(-2px);
+    }
+
+    body.light-mode .btn:hover {
+        background: #1565c0;
+    }
+
+    .dual-btns {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
     .music-player {
-        margin-top: 10px; /* تقليل الهامش العلوي */
+        margin-top: 15px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
     }
-    
+
     .music-btn {
-        background-color: var(--music-btn-color); /* استخدام اللون الأزرق الغامق */
+        background-color: var(--music-btn-color);
         color: white;
         border: none;
-        border-radius: 5px;
-        padding: 8px 15px;
-        font-size: 14px;
+        border-radius: 12px;
+        padding: 10px 18px;
+        font-size: 0.95rem;
         cursor: pointer;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
-        gap: 5px;
-        width: 120px;
+        gap: 8px;
+        width: 140px;
         justify-content: center;
+        box-shadow: 0 12px 25px rgba(21, 101, 192, 0.35);
     }
-    
+
     .music-btn:hover {
-        background-color: #0D47A1; /* لون أزرق أغمق عند التمرير */
+        background-color: #0D47A1;
         transform: scale(1.05);
     }
 
-    @media(max-width:480px){
-        .profile-pic{width:100px; height:100px;}
-        .profile-name{font-size:1.5rem;}
-        .social-icons-row a{font-size:1.5rem;}
-        .info-item i{font-size:1.2rem; margin-right:10px;}
-        .info-item span{font-size:1rem;}
-        .skills-grid{grid-template-columns:1fr;}
-        .music-btn {
-            padding: 6px 12px;
-            font-size: 12px;
+    .music-btn.playing {
+        box-shadow: 0 0 18px 6px rgba(21, 101, 192, 0.55);
+        position: relative;
+    }
+
+    .music-btn.playing::after {
+        content: '';
+        position: absolute;
+        inset: -6px;
+        border-radius: 16px;
+        background: radial-gradient(circle at center, rgba(21, 101, 192, 0.55), transparent 65%);
+        filter: blur(4px);
+        z-index: -1;
+    }
+
+    .music-btn.playing i {
+        animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+        from {
+            transform: scale(1);
+        }
+
+        to {
+            transform: scale(1.2);
+        }
+    }
+
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 18px;
+        margin-top: 30px;
+    }
+
+    .skill-item {
+        background: var(--card-bg);
+        padding: 20px 15px;
+        border-radius: 14px;
+        border-left: 4px solid var(--primary-color);
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    }
+
+    .skill-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .skill-icon {
+        font-size: 1.9rem;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+    }
+
+    .skill-name {
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 25px;
+        margin-top: 35px;
+    }
+
+    .project-card {
+        background: var(--card-bg);
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
+        transition: transform 0.35s ease, box-shadow 0.35s ease;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .project-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 25px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .project-image {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+    }
+
+    .project-content {
+        padding: 20px;
+        text-align: left;
+    }
+
+    .project-title {
+        font-size: 1.2rem;
+        margin-bottom: 8px;
+        color: var(--primary-color);
+    }
+
+    .project-desc {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        opacity: 0.85;
+    }
+
+    .social-icons-row {
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+        margin: 25px 0;
+    }
+
+    .social-icons-row a {
+        font-size: 1.8rem;
+        transition: transform 0.3s ease;
+    }
+
+    .social-icons-row a:hover {
+        transform: scale(1.2);
+    }
+
+    .telegram {
+        background: linear-gradient(135deg, #2AABEE, #1C87C9);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .instagram {
+        background: linear-gradient(45deg, #F58529, #DD2A7B, #8134AF, #515BD4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .tiktok {
+        background: linear-gradient(45deg, #69C9D0, #EE1D52);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .back-btn {
+        margin-top: 35px;
+    }
+
+    #backToTop {
+        position: fixed;
+        bottom: 35px;
+        right: 25px;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: none;
+        background: var(--primary-color);
+        color: #fff;
+        font-size: 1.2rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.35);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        z-index: 50;
+    }
+
+    #backToTop.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    #backToTop:hover {
+        transform: translateY(-4px);
+    }
+
+    @media (max-width: 768px) {
+        .top-bar {
+            flex-direction: column;
+            gap: 12px;
+            padding: 14px;
+        }
+
+        .mode-toggle {
+            align-self: flex-end;
+        }
+
+        .profile-pic {
+            width: 110px;
+            height: 110px;
+        }
+
+        .info-card {
+            padding: 24px;
+        }
+
+        .projects-grid {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        main {
+            padding-top: 140px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .top-bar {
+            top: 10px;
+            padding: 12px;
+        }
+
+        .nav-btn,
+        .mode-toggle {
+            font-size: 0.85rem;
+            padding: 7px 14px;
+        }
+
+        .profile-pic {
             width: 100px;
+            height: 100px;
+        }
+
+        .social-icons-row a {
+            font-size: 1.6rem;
+        }
+
+        .info-item i {
+            font-size: 1.2rem;
+            margin-right: 10px;
+        }
+
+        .info-item span {
+            font-size: 1rem;
+        }
+
+        .music-btn {
+            width: 120px;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+        }
+
+        .projects-grid {
+            grid-template-columns: 1fr;
+        }
+
+        #backToTop {
+            bottom: 20px;
+            right: 18px;
         }
     }
 </style>
@@ -198,106 +698,230 @@
         <div class="loader-text">Loading...</div>
     </div>
 
-    <!-- Neon Background -->
+    <header class="top-bar">
+        <div class="nav-buttons">
+            <button class="nav-btn active" data-target="home-page"><i class="fas fa-home"></i> Home</button>
+            <button class="nav-btn" data-target="skills-page"><i class="fas fa-bolt"></i> Skills</button>
+            <button class="nav-btn" data-target="projects-page"><i class="fas fa-rocket"></i> Projects</button>
+        </div>
+        <button class="mode-toggle" id="modeToggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+    </header>
+
     <div class="bg-animation"></div>
     <div class="neon-text">Errors</div>
     <div class="background-text">
-      ERROR 404! FILE NOT FOUND! THE FILE YOU ARE LOOKING FOR IS NOT WHERE YOU THINK IT IS.
+        ERROR 404! FILE NOT FOUND! THE FILE YOU ARE LOOKING FOR IS NOT WHERE YOU THINK IT IS.
     </div>
 
-    <!-- Home Page -->
-    <div class="container" id="home-page">
-        <div class="profile-pic"><img src="https://i.imgur.com/dthbh5C.jpeg" alt="Profile Picture"></div>
-        <h1 class="profile-name">Sajad</h1>
-        <p class="profile-title">You are your own enemy again </p>
+    <main>
+        <section class="container page active fade-in" id="home-page" style="display:block;">
+            <div class="profile-pic"><img src="https://i.imgur.com/dthbh5C.jpeg" alt="Profile Picture"></div>
+            <h1 class="profile-name">Sajad</h1>
+            <p class="profile-title">You are your own enemy again</p>
 
-        <div class="info-card">
-            <div class="info-item"><i class="fas fa-user"></i> <span>Sajad</span></div>
-            <div class="info-item"><i class="fas fa-flag"></i> <span>Iraq</span></div>
-            <div class="info-item"><i class="fas fa-city"></i> <span>Basra</span></div>
-            <div class="info-item"><i class="fas fa-birthday-cake"></i> <span>26</span></div>
-        </div>
+            <div class="info-card">
+                <div class="info-item"><i class="fas fa-user"></i> <span>Sajad</span></div>
+                <div class="info-item"><i class="fas fa-flag"></i> <span>Iraq</span></div>
+                <div class="info-item"><i class="fas fa-city"></i> <span>Basra</span></div>
+                <div class="info-item"><i class="fas fa-birthday-cake"></i> <span>26</span></div>
+            </div>
 
-        <button class="btn" id="btn-skills">View Skills</button>
-        
-        <!-- زر الأغنية تحت زر View Skills -->
-        <div class="music-player">
-            <button class="music-btn" id="playBtn">
-                <i class="fas fa-play"></i> play
-            </button>
-        </div>
+            <div class="dual-btns">
+                <button class="btn" id="btn-skills">View Skills</button>
+                <button class="btn" id="btn-projects">View Projects</button>
+            </div>
 
-        <!-- أيقونات التواصل الاجتماعي في الأسفل -->
-        <div class="social-icons-row">
-            <a href="https://t.me/Vaibey" target="_blank" class="telegram"><i class="fab fa-telegram"></i></a>
-            <a href="https://www.instagram.com/_xnec" target="_blank" class="instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.tiktok.com/@ut8p0" target="_blank" class="tiktok"><i class="fab fa-tiktok"></i></a>
-        </div>
-    </div>
+            <div class="music-player">
+                <button class="music-btn" id="playBtn">
+                    <i class="fas fa-play"></i> Play
+                </button>
+            </div>
 
-    <!-- Skills Page -->
-    <div class="container" id="skills-page">
-        <h2 class="section-title">Skills</h2>
-        <div class="skills-grid">
-            <div class="skill-item"><div class="skill-icon"><i class="fab fa-html5"></i></div><div class="skill-name">HTML</div></div>
-            <div class="skill-item"><div class="skill-icon"><i class="fab fa-css3-alt"></i></div><div class="skill-name">CSS</div></div>
-            <div class="skill-item"><div class="skill-icon"><i class="fab fa-js"></i></div><div class="skill-name">JavaScript</div></div>
-            <div class="skill-item"><div class="skill-icon"><i class="fas fa-code"></i></div><div class="skill-name">Web Development</div></div>
-        </div>
-        <button class="btn" id="btn-back">Back to Home</button>
-    </div>
+            <div class="social-icons-row">
+                <a href="https://t.me/Vaibey" target="_blank" class="telegram"><i class="fab fa-telegram"></i></a>
+                <a href="https://www.instagram.com/_xnec" target="_blank" class="instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@ut8p0" target="_blank" class="tiktok"><i class="fab fa-tiktok"></i></a>
+            </div>
+        </section>
+
+        <section class="container page" id="skills-page">
+            <h2 class="section-title">Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-item">
+                    <div class="skill-icon"><i class="fab fa-html5"></i></div>
+                    <div class="skill-name">HTML</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon"><i class="fab fa-css3-alt"></i></div>
+                    <div class="skill-name">CSS</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon"><i class="fab fa-js"></i></div>
+                    <div class="skill-name">JavaScript</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon"><i class="fas fa-code"></i></div>
+                    <div class="skill-name">Web Development</div>
+                </div>
+            </div>
+            <button class="btn back-btn" id="btn-back-home">Back to Home</button>
+        </section>
+
+        <section class="container page" id="projects-page">
+            <h2 class="section-title">Projects</h2>
+            <div class="projects-grid">
+                <article class="project-card">
+                    <img class="project-image" src="https://images.unsplash.com/photo-1523475472560-d2df97ec485c?auto=format&fit=crop&w=800&q=80" alt="Project 1">
+                    <div class="project-content">
+                        <h3 class="project-title">Aurora UI Kit</h3>
+                        <p class="project-desc">A modern UI framework focused on fluid motion and neon-inspired aesthetics for immersive digital experiences.</p>
+                    </div>
+                </article>
+                <article class="project-card">
+                    <img class="project-image" src="https://images.unsplash.com/photo-1526498460520-4c246339dccb?auto=format&fit=crop&w=800&q=80" alt="Project 2">
+                    <div class="project-content">
+                        <h3 class="project-title">Nebula Dashboard</h3>
+                        <p class="project-desc">An analytics dashboard featuring real-time data visualizations and adaptive layouts optimized for all devices.</p>
+                    </div>
+                </article>
+                <article class="project-card">
+                    <img class="project-image" src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80" alt="Project 3">
+                    <div class="project-content">
+                        <h3 class="project-title">Eclipse Portfolio</h3>
+                        <p class="project-desc">A creative portfolio template with cinematic scrolling effects and seamless section transitions.</p>
+                    </div>
+                </article>
+            </div>
+            <button class="btn back-btn" id="btn-back-home-projects">Back to Home</button>
+        </section>
+    </main>
 
     <audio id="bgMusic">
         <source src="https://od.lk/s/M18zMTk3MzkxOTFf/7803551037.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function(){
-            document.getElementById('loader').style.display = 'flex';
-            setTimeout(()=>{document.getElementById('loader').style.display='none';},1500);
+    <button id="backToTop" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
 
-            const btnSkills = document.getElementById('btn-skills');
-            const btnBack = document.getElementById('btn-back');
-            const homePage = document.getElementById('home-page');
-            const skillsPage = document.getElementById('skills-page');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const loader = document.getElementById('loader');
+            loader.style.display = 'flex';
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 1200);
+
+            const navButtons = document.querySelectorAll('.nav-btn');
             const neonText = document.querySelector('.neon-text');
             const backgroundText = document.querySelector('.background-text');
-            
-            // عناصر مشغل الموسيقى
+            const homePage = document.getElementById('home-page');
+            const backBtnSkills = document.getElementById('btn-back-home');
+            const backBtnProjects = document.getElementById('btn-back-home-projects');
+            const btnSkills = document.getElementById('btn-skills');
+            const btnProjects = document.getElementById('btn-projects');
             const playBtn = document.getElementById('playBtn');
             const bgMusic = document.getElementById('bgMusic');
+            const modeToggle = document.getElementById('modeToggle');
+            const backToTop = document.getElementById('backToTop');
             let isPlaying = false;
+            let activePage = homePage;
 
-            // التحكم بتشغيل وإيقاف الموسيقى
-            playBtn.addEventListener('click', function() {
+            const showPage = (targetId) => {
+                if (activePage && activePage.id === targetId) return;
+                const targetPage = document.getElementById(targetId);
+                if (!targetPage) return;
+
+                const finishTransition = (page) => {
+                    page.classList.remove('fade-out', 'active');
+                    page.style.display = 'none';
+                };
+
+                if (activePage) {
+                    activePage.classList.add('fade-out');
+                    activePage.addEventListener('animationend', function handleFadeOut() {
+                        finishTransition(activePage);
+                        activePage.removeEventListener('animationend', handleFadeOut);
+                    });
+                }
+
+                targetPage.style.display = 'block';
+                requestAnimationFrame(() => {
+                    targetPage.classList.add('active', 'fade-in');
+                });
+
+                targetPage.addEventListener('animationend', function handleFadeIn() {
+                    targetPage.classList.remove('fade-in');
+                    targetPage.removeEventListener('animationend', handleFadeIn);
+                });
+
+                navButtons.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.target === targetId);
+                });
+
+                if (targetId === 'home-page') {
+                    neonText.classList.remove('paused');
+                    backgroundText.classList.remove('paused');
+                } else {
+                    neonText.classList.add('paused');
+                    backgroundText.classList.add('paused');
+                }
+
+                activePage = targetPage;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', () => showPage(btn.dataset.target));
+            });
+
+            btnSkills.addEventListener('click', () => showPage('skills-page'));
+            btnProjects.addEventListener('click', () => showPage('projects-page'));
+            backBtnSkills.addEventListener('click', () => showPage('home-page'));
+            backBtnProjects.addEventListener('click', () => showPage('home-page'));
+
+            bgMusic.volume = 0.5;
+            playBtn.addEventListener('click', function () {
                 if (isPlaying) {
                     bgMusic.pause();
-                    playBtn.innerHTML = '<i class="fas fa-play"></i> play';
+                    playBtn.innerHTML = '<i class="fas fa-play"></i> Play';
+                    playBtn.classList.remove('playing');
                 } else {
                     bgMusic.play();
-                    playBtn.innerHTML = '<i class="fas fa-pause"></i> stop';
+                    playBtn.innerHTML = '<i class="fas fa-pause"></i> Stop';
+                    playBtn.classList.add('playing');
                 }
                 isPlaying = !isPlaying;
             });
 
-            // ضبط مستوى الصوت الافتراضي
-            bgMusic.volume = 0.5;
-
-            btnSkills.addEventListener('click', ()=>{
-                homePage.style.display='none';
-                skillsPage.style.display='block';
-                // إيقاف حركة الخلفية
-                neonText.classList.add('paused');
-                backgroundText.classList.add('paused');
+            bgMusic.addEventListener('ended', () => {
+                bgMusic.currentTime = 0;
+                isPlaying = false;
+                playBtn.innerHTML = '<i class="fas fa-play"></i> Play';
+                playBtn.classList.remove('playing');
             });
 
-            btnBack.addEventListener('click', ()=>{
-                skillsPage.style.display='none';
-                homePage.style.display='block';
-                // إعادة تشغيل حركة الخلفية
-                neonText.classList.remove('paused');
-                backgroundText.classList.remove('paused');
+            modeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                const icon = modeToggle.querySelector('i');
+                if (document.body.classList.contains('light-mode')) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            });
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 200) {
+                    backToTop.classList.add('show');
+                } else {
+                    backToTop.classList.remove('show');
+                }
+            });
+
+            backToTop.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         });
     </script>
