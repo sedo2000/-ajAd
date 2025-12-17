@@ -1,305 +1,920 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Personal Portfolio - Sajad</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-    :root {
-        --primary-color: #4CAF50;
-        --music-btn-color: #1565C0; /* أزرق غامق */
-        --info-card-color: #0D47A1; /* أزرق غامق للبطاقة */
-        --text-color: #e0e0e0;
-        --dark-color: #000;
-        --card-bg: rgba(30,30,30,0.8);
-        --blur-effect: blur(12px);
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Personal Portfolio - Sajad</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --primary:#4CAF50;
+      --btn:#1565C0;
+      --card:#0D47A1;
+      --text:#e0e0e0;
+      --bg:#000;
+      --neon:#00ffff;
+
+      --radius:18px;
+      --shadow:0 12px 35px rgba(0,0,0,.45);
+
+      --bg-rotate: 30s;
+      --bg-opacity: .02;
+
+      --dw-opacity: .08;
+      --dw-glow: 1;
+      --dw-scale: 1;
+      --bars-opacity: .18;
     }
 
-    *{box-sizing:border-box; margin:0; padding:0;}
+    *{box-sizing:border-box;margin:0;padding:0}
     body{
-        font-family:'Tajawal', sans-serif;
-        color: var(--text-color);
-        background: var(--dark-color);
-        min-height:100vh;
-        overflow-x:hidden;
-        display:flex; flex-direction:column; align-items:center;
-        position: relative;
+      font-family:'Tajawal',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+      overflow-x:hidden;
     }
 
-    /* --------------------- خلفية Neon --------------------- */
-    .bg-animation{
-        position: fixed; top:0; left:0; width:100%; height:100%; z-index:-2;
-        background: #000;
+    .bg-wrap{ position:fixed; inset:0; z-index:-5; pointer-events:none; }
+
+    .bg-rotator{
+      position:absolute;
+      inset:-50%;
+      width:200%;
+      height:200%;
+      opacity:var(--bg-opacity);
+      animation: spin var(--bg-rotate) linear infinite;
+      transform-origin:center;
     }
 
-    .neon-text {
-        font-size: 8rem;
-        font-weight: bold;
-        color: #0ff;
-        text-transform: uppercase;
-        text-shadow:
-          0 0 5px #0ff,
-          0 0 10px #0ff,
-          0 0 20px #0ff,
-          0 0 40px #0ff;
-        animation: flicker 0.1s infinite alternate, moveFast 1s linear infinite alternate;
-        position: fixed;
-        top: 30%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        opacity: 0.1;
-        z-index:-1;
-        animation-play-state: running; /* الافتراضي تشغيل */
+    .bg-text{
+      width:100%;
+      height:100%;
+      color:rgba(255,255,255,1);
+      font-size:2rem;
+      white-space:nowrap;
+      line-height: 2.2;
+      padding: 40px;
+      opacity: 1;
     }
 
-    @keyframes flicker {
-        0% { opacity: 0.05; }
-        50% { opacity: 0.1; }
-        100% { opacity: 0.07; }
+    @keyframes spin{ to{ transform:rotate(360deg);} }
+
+    .state-wipe{
+      position:absolute;
+      inset:0;
+      background: radial-gradient(circle at 50% 40%, rgba(0,255,255,.10), rgba(0,0,0,0) 55%);
+      opacity:0;
+      transition: opacity .35s ease;
     }
+    body.is-wiping .state-wipe{ opacity:1; }
 
-    @keyframes moveFast {
-        0% { transform: translate(-50%, -50%) rotate(0deg); }
-        25% { transform: translate(calc(-50% + 20px), calc(-50% - 20px)) rotate(-2deg); }
-        50% { transform: translate(calc(-50% - 20px), calc(-50% + 20px)) rotate(2deg); }
-        75% { transform: translate(calc(-50% + 15px), calc(-50% - 10px)) rotate(-1deg); }
-        100% { transform: translate(calc(-50% - 15px), calc(-50% + 10px)) rotate(1deg); }
-    }
-
-    .background-text {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 200%;
-        height: 200%;
-        font-size: 2rem;
-        color: rgba(255,255,255,0.02);
-        white-space: nowrap;
-        animation: move 30s linear infinite;
-        pointer-events: none;
-        z-index: -2;
-        animation-play-state: running; /* الافتراضي تشغيل */
-    }
-
-    @keyframes move {
-        0% { transform: translate(-50%, -50%) rotate(0deg); }
-        100% { transform: translate(-50%, -50%) rotate(360deg); }
-    }
-
-    /* عند إيقاف الحركة */
-    .paused {
-        animation-play-state: paused !important;
-    }
-
-    /* --------------------- Loader --------------------- */
-    .loader{display:flex; justify-content:center; align-items:center; flex-direction:column; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index:9999; display:none;}
-    .loader-spinner{width:50px; height:50px; border:5px solid rgba(255,255,255,0.1); border-radius:50%; border-top-color: var(--primary-color); animation: spin 1s linear infinite;}
-    .loader-text{margin-top:15px; color: var(--text-color);}
-    @keyframes spin{to{transform:rotate(360deg);}}
-
-    /* --------------------- Container --------------------- */
     .container{
-        width:100%; max-width:1000px; padding:15px; margin-top:40px; text-align:center;
-        background: transparent; /* شفافية الخلفية للسماح برؤية Neon */
+      width:100%;
+      max-width:420px;
+      padding:32px 20px;
+      text-align:center;
+      position:relative;
     }
 
-    .profile-pic{width:120px; height:120px; border-radius:50%; overflow:hidden; border:4px solid var(--primary-color); margin:0 auto; box-shadow:0 0 15px rgba(76,175,80,0.5); transition: transform 0.3s ease;}
-    .profile-pic img{width:100%; height:100%; object-fit:cover;}
-    .profile-pic:hover{transform:scale(1.05);}
-    .profile-name{font-size:1.8rem; margin-top:15px; color:var(--primary-color);}
-    .profile-title{opacity:0.8; margin-top:5px;}
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:18px;
+    }
+
+    .icon-btn{
+      border:none;
+      cursor:pointer;
+      border-radius:12px;
+      padding:10px 12px;
+      background:rgba(255,255,255,.06);
+      color:rgba(255,255,255,.85);
+      transition:transform .2s ease, background .2s ease, opacity .2s ease;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+    }
+    .icon-btn:hover{ transform:translateY(-1px); background:rgba(255,255,255,.09); }
+    .icon-btn:active{ transform:translateY(0); opacity:.92; }
+
+    .status-pill{
+      font-size:.9rem;
+      opacity:.7;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.05);
+      user-select:none;
+    }
+
+    .reveal{
+      opacity:0;
+      transform:translateY(14px);
+      transition:opacity .6s ease, transform .6s ease;
+    }
+    body.is-loaded .reveal{ opacity:1; transform:translateY(0); }
+    .r1{ transition-delay:.05s; }
+    .r2{ transition-delay:.15s; }
+    .r3{ transition-delay:.28s; }
+    .r4{ transition-delay:.42s; }
+    .r5{ transition-delay:.58s; }
+
+    .profile-btn{
+      border:none;
+      background:transparent;
+      padding:0;
+      cursor:pointer;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .15s ease, filter .15s ease;
+    }
+    .profile-btn:hover{ filter:brightness(1.03); }
+    .profile-btn:active{ transform: scale(.99); }
+
+    .profile-pic{
+      width:120px;height:120px;
+      margin:0 auto;
+      border-radius:50%;
+      overflow:hidden;
+      border:4px solid var(--primary);
+      box-shadow:0 0 18px rgba(76,175,80,.25);
+    }
+    .profile-pic img{ width:100%;height:100%;object-fit:cover;display:block; }
+
+    .profile-name{ margin-top:16px; font-size:1.9rem; color:var(--primary); }
+    .profile-title{ margin-top:6px; opacity:.75; }
 
     .info-card{
-        background: var(--info-card-color); /* استخدام اللون الأزرق الغامق */
-        backdrop-filter: var(--blur-effect);
-        border-radius:20px;
-        padding:30px 40px;
-        margin:30px auto;
-        max-width:350px;
-        width:90%;
-        text-align:left;
-        box-shadow:0 10px 30px rgba(0,0,0,0.5);
-        animation: fadeIn 1s ease forwards;
+      margin:28px auto 0;
+      background:var(--card);
+      padding:22px 20px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      text-align:left;
     }
-    @keyframes fadeIn{from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);}}
-    .info-item{display:flex; align-items:center; margin:15px 0; transition:all 0.3s ease;}
-    .info-item i{font-size:1.5rem; margin-right:15px; color: var(--primary-color); transition: all 0.3s ease; width:25px; text-align:center;}
-    .info-item:hover i{transform: scale(1.2);}
-    .info-item span{font-size:1.1rem; font-weight:500;}
-
-    .btn{margin-top:20px; padding:10px 20px; background: var(--primary-color); color:#fff; border:none; border-radius:10px; cursor:pointer; transition:all 0.3s ease;}
-    .btn:hover{background:#2e7d32;}
-
-    /* Skills Page */
-    #skills-page{display:none; text-align:center; margin-top:40px;}
-    .skills-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:15px; margin-top:20px;}
-    .skill-item{background: rgba(0,0,0,0.3); padding:15px; border-radius:10px; border-left:3px solid var(--primary-color); transition:all 0.3s ease;}
-    .skill-item:hover{transform:translateY(-3px); box-shadow:0 5px 15px rgba(0,0,0,0.2);}
-    .skill-icon{font-size:1.8rem; color: var(--primary-color); margin-bottom:10px;}
-    .skill-name{font-weight:500;}
-
-    .social-icons-row{display:flex; justify-content:center; gap:25px; margin: 20px 0; /* تعديل الهامش */}
-    .social-icons-row a{font-size:1.8rem; transition:all 0.3s ease;}
-    .social-icons-row a:hover{transform: scale(1.2);}
-    .telegram{background:linear-gradient(135deg,#2AABEE,#1C87C9); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
-    .instagram{background:linear-gradient(45deg,#F58529,#DD2A7B,#8134AF,#515BD4); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
-    .tiktok{background:linear-gradient(45deg,#69C9D0,#EE1D52); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
-
-    /* Music Player Styles */
-    .music-player {
-        margin-top: 10px; /* تقليل الهامش العلوي */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
+    .info-item{
+      display:flex; align-items:center; gap:12px;
+      padding:10px 0;
     }
-    
-    .music-btn {
-        background-color: var(--music-btn-color); /* استخدام اللون الأزرق الغامق */
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 8px 15px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        width: 120px;
-        justify-content: center;
-    }
-    
-    .music-btn:hover {
-        background-color: #0D47A1; /* لون أزرق أغمق عند التمرير */
-        transform: scale(1.05);
+    .info-item i{
+      color:var(--primary);
+      font-size:1.25rem;
+      width:22px;
+      text-align:center;
+      flex:0 0 22px;
     }
 
-    @media(max-width:480px){
-        .profile-pic{width:100px; height:100px;}
-        .profile-name{font-size:1.5rem;}
-        .social-icons-row a{font-size:1.5rem;}
-        .info-item i{font-size:1.2rem; margin-right:10px;}
-        .info-item span{font-size:1rem;}
-        .skills-grid{grid-template-columns:1fr;}
-        .music-btn {
-            padding: 6px 12px;
-            font-size: 12px;
-            width: 100px;
-        }
+    .music{
+      margin-top:18px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
     }
-</style>
+    .music-btn{
+      background:var(--btn);
+      color:#fff;
+      border:none;
+      padding:10px 18px;
+      border-radius:12px;
+      cursor:pointer;
+      transition:transform .2s ease, filter .2s ease, opacity .2s ease;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      min-width:140px;
+      justify-content:center;
+      user-select:none;
+    }
+    .music-btn:hover{ transform:translateY(-1px); filter:brightness(1.08); }
+    .music-btn:active{ transform:translateY(0); opacity:.92; }
+
+    .volume-row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      width:100%;
+      max-width:260px;
+      opacity:.85;
+    }
+    input[type="range"]{ width:100%; accent-color:var(--primary); }
+
+    .hint{
+      font-size:.9rem;
+      opacity:.6;
+      user-select:none;
+      min-height: 1.2em;
+    }
+
+    .deathwish-wrap{
+      width:100%;
+      margin-top:12px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:8px;
+      position:relative;
+    }
+
+    .deathwish{
+      font-weight:800;
+      letter-spacing:1px;
+      color:var(--neon);
+      text-align:center;
+
+      opacity:var(--dw-opacity);
+      transform:scale(var(--dw-scale));
+      transition:opacity .25s ease, transform .25s ease;
+
+      text-shadow:
+        0 0 calc(6px * var(--dw-glow)) var(--neon),
+        0 0 calc(16px * var(--dw-glow)) var(--neon),
+        0 0 calc(34px * var(--dw-glow)) var(--neon);
+
+      user-select:none;
+      pointer-events:none;
+    }
+
+    .deathwish{ font-size:6rem; }
+    @media (max-width:768px){ .deathwish{ font-size:3.8rem; } }
+    @media (max-width:480px){ .deathwish{ font-size:3rem; } }
+
+    #viz{
+      width: 92%;
+      max-width: 320px;
+      height: 42px;
+      opacity: var(--bars-opacity);
+      filter: drop-shadow(0 0 10px rgba(0,255,255,.15));
+      border-radius: 12px;
+      background: rgba(255,255,255,.03);
+    }
+
+    body.is-playing{
+      --bg-rotate: 60s;
+      --bg-opacity: .028;
+      --dw-opacity: .16;
+      --dw-glow: 1.25;
+      --bars-opacity: .30;
+    }
+
+    body.is-focus{
+      --bg-rotate: 999999s;
+      --bg-opacity: .018;
+      --dw-opacity: .06;
+      --dw-glow: .9;
+      --bars-opacity: .10;
+    }
+
+    /* ============= STORY ============= */
+    .story-modal{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background: rgba(0,0,0,.88);
+      padding: 16px;
+    }
+    body.story-open .story-modal{ display:flex; }
+    body.story-open{ overflow:hidden; touch-action:none; }
+
+    .story-card{
+      width:min(420px, 96vw);
+      height:min(760px, 86vh);
+      border-radius: 22px;
+      overflow:hidden;
+      position:relative;
+      background: #050505;
+      box-shadow: 0 30px 90px rgba(0,0,0,.6);
+      border: 1px solid rgba(255,255,255,.06);
+    }
+
+    .story-media{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      background:#000;
+    }
+
+    .story-top{
+      position:absolute;
+      left:0; right:0; top:0;
+      padding: 10px 12px 8px;
+      background: linear-gradient(to bottom, rgba(0,0,0,.65), rgba(0,0,0,0));
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      z-index:5;
+      pointer-events:none;
+    }
+
+    .story-progress{ display:flex; gap:6px; }
+    .story-progress .seg{
+      height:3px; flex:1;
+      border-radius:999px;
+      background: rgba(255,255,255,.20);
+      overflow:hidden; position:relative;
+    }
+    .story-progress .fill{
+      position:absolute; inset:0;
+      width:0%;
+      background: rgba(255,255,255,.92);
+      border-radius:999px;
+      transform: translateZ(0);
+    }
+
+    .story-user{
+      display:flex; align-items:center; gap:10px;
+      pointer-events:none;
+    }
+    .story-avatar{
+      width:34px;height:34px;
+      border-radius:50%;
+      border:2px solid rgba(76,175,80,.85);
+      overflow:hidden;
+    }
+    .story-avatar img{ width:100%;height:100%;object-fit:cover;display:block; }
+
+    .story-meta{ line-height:1.1; text-align:left; }
+    .story-name{ font-weight:700; font-size:.98rem; }
+    .story-time{ font-size:.82rem; opacity:.75; }
+
+    .story-close{
+      position:absolute; top:10px; right:10px;
+      border:none; cursor:pointer;
+      width:36px;height:36px;
+      border-radius:12px;
+      background: rgba(255,255,255,.10);
+      color: rgba(255,255,255,.92);
+      display:flex; align-items:center; justify-content:center;
+      z-index:10;
+    }
+
+    .story-caption{
+      position:absolute;
+      left:0; right:0; bottom:0;
+      padding: 14px 14px 16px;
+      background: linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,0));
+      text-align:left;
+      font-size: .95rem;
+      opacity:.95;
+      user-select:none;
+      pointer-events:none;
+      z-index:5;
+    }
+
+    .tap-zones{ position:absolute; inset:0; display:flex; z-index:6; }
+    .tap-zone{
+      flex:1; background:transparent; border:none;
+      padding:0; margin:0; cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .story-hint{
+      position:absolute;
+      left:50%; top:50%;
+      transform:translate(-50%,-50%);
+      padding:10px 14px;
+      border-radius:14px;
+      background: rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.10);
+      color: rgba(255,255,255,.92);
+      font-size:.95rem;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .2s ease, transform .2s ease;
+      z-index:8;
+      text-align:center;
+      white-space:nowrap;
+    }
+    body.story-paused .story-hint{ opacity:1; transform:translate(-50%,-50%) scale(1.02); }
+
+    @media (prefers-reduced-motion: reduce){
+      .bg-rotator{ animation:none !important; }
+      .reveal{ transition:none !important; opacity:1; transform:none; }
+    }
+  </style>
 </head>
+
 <body>
-    <div class="loader" id="loader">
-        <div class="loader-spinner"></div>
-        <div class="loader-text">Loading...</div>
+  <div class="bg-wrap" aria-hidden="true">
+    <div class="bg-rotator" id="bgRotator">
+      <div class="bg-text" id="bgText"></div>
+    </div>
+    <div class="state-wipe"></div>
+  </div>
+
+  <!-- STORY MODAL -->
+  <div class="story-modal" id="storyModal" aria-hidden="true">
+    <div class="story-card" role="dialog" aria-modal="true" aria-label="Story" id="storyCard">
+      <video class="story-media" id="storyVideo"
+             playsinline preload="metadata"
+             webkit-playsinline x5-playsinline></video>
+
+      <div class="tap-zones" aria-hidden="true">
+        <button class="tap-zone" id="tapPrev" type="button" title="Prev"></button>
+        <button class="tap-zone" id="tapNext" type="button" title="Next"></button>
+      </div>
+
+      <div class="story-top">
+        <div class="story-progress" id="storyProgress" aria-hidden="true"></div>
+        <div class="story-user">
+          <div class="story-avatar">
+            <img src="https://i.imgur.com/dthbh5C.jpeg" alt="Avatar">
+          </div>
+          <div class="story-meta">
+            <div class="story-name">Sajad</div>
+            <div class="story-time">Story</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="story-close" id="storyCloseBtn" type="button" title="Close story">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <div class="story-caption" id="storyCaption">Deathwish</div>
+      <div class="story-hint" id="storyHint">Paused</div>
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="topbar reveal r1">
+      <button class="icon-btn" id="focusBtn" type="button" aria-pressed="false" title="Focus mode">
+        <i class="fas fa-moon"></i>
+        <span style="font-size:.92rem;opacity:.85;">Focus</span>
+      </button>
+      <div class="status-pill" id="statusPill">NORMAL</div>
     </div>
 
-    <!-- Neon Background -->
-    <div class="bg-animation"></div>
-    <div class="neon-text">Errors</div>
-    <div class="background-text">
-      ERROR 404! FILE NOT FOUND! THE FILE YOU ARE LOOKING FOR IS NOT WHERE YOU THINK IT IS.
-    </div>
+    <button class="profile-btn reveal r2" id="profileBtn" type="button" title="Open story" aria-label="Open story">
+      <div class="profile-pic">
+        <img src="https://i.imgur.com/dthbh5C.jpeg" alt="Profile">
+      </div>
+    </button>
 
-    <!-- Home Page -->
-    <div class="container" id="home-page">
-        <div class="profile-pic"><img src="https://i.imgur.com/dthbh5C.jpeg" alt="Profile Picture"></div>
-        <h1 class="profile-name">Sajad</h1>
-        <p class="profile-title">You are your own enemy again </p>
+    <h1 class="profile-name reveal r3">Sajad</h1>
+    <p class="profile-title reveal r3">You are your own enemy again</p>
 
-        <div class="info-card">
-            <div class="info-item"><i class="fas fa-user"></i> <span>Sajad</span></div>
-            <div class="info-item"><i class="fas fa-flag"></i> <span>Iraq</span></div>
-            <div class="info-item"><i class="fas fa-city"></i> <span>Basra</span></div>
-            <div class="info-item"><i class="fas fa-birthday-cake"></i> <span>26</span></div>
-        </div>
+    <section class="info-card reveal r4">
+      <div class="info-item"><i class="fas fa-user"></i><span>Sajad</span></div>
+      <div class="info-item"><i class="fas fa-flag"></i><span>Iraq</span></div>
+      <div class="info-item"><i class="fas fa-city"></i><span>Basra</span></div>
+      <div class="info-item"><i class="fas fa-birthday-cake"></i><span>26</span></div>
+    </section>
 
-        <button class="btn" id="btn-skills">View Skills</button>
-        
-        <!-- زر الأغنية تحت زر View Skills -->
-        <div class="music-player">
-            <button class="music-btn" id="playBtn">
-                <i class="fas fa-play"></i> play
-            </button>
-        </div>
+    <section class="music reveal r5">
+      <button class="music-btn" id="playBtn" type="button">
+        <i class="fas fa-play"></i>
+        <span id="playLabel">play</span>
+      </button>
 
-        <!-- أيقونات التواصل الاجتماعي في الأسفل -->
-        <div class="social-icons-row">
-            <a href="https://t.me/Vaibey" target="_blank" class="telegram"><i class="fab fa-telegram"></i></a>
-            <a href="https://www.instagram.com/_xnec" target="_blank" class="instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.tiktok.com/@ut8p0" target="_blank" class="tiktok"><i class="fab fa-tiktok"></i></a>
-        </div>
-    </div>
+      <div class="volume-row" title="Volume">
+        <i class="fas fa-volume-down"></i>
+        <input id="vol" type="range" min="0" max="1" step="0.01" value="0.5" />
+        <i class="fas fa-volume-up"></i>
+      </div>
 
-    <!-- Skills Page -->
-    <div class="container" id="skills-page">
-        <h2 class="section-title">Skills</h2>
-        <div class="skills-grid">
-            <div class="skill-item"><div class="skill-icon"><i class="fab fa-html5"></i></div><div class="skill-name">HTML</div></div>
-            <div class="skill-item"><div class="skill-icon"><i class="fab fa-css3-alt"></i></div><div class="skill-name">CSS</div></div>
-            <div class="skill-item"><div class="skill-icon"><i class="fab fa-js"></i></div><div class="skill-name">JavaScript</div></div>
-            <div class="skill-item"><div class="skill-icon"><i class="fas fa-code"></i></div><div class="skill-name">Web Development</div></div>
-        </div>
-        <button class="btn" id="btn-back">Back to Home</button>
-    </div>
+      <div class="hint" id="hintText"></div>
 
-    <audio id="bgMusic">
-        <source src="https://od.lk/s/M18zMTk3MzkxOTFf/7803551037.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+      <div class="deathwish-wrap">
+        <canvas id="viz" width="320" height="42"></canvas>
+        <div class="deathwish">Deathwish</div>
+      </div>
+    </section>
+  </main>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function(){
-            document.getElementById('loader').style.display = 'flex';
-            setTimeout(()=>{document.getElementById('loader').style.display='none';},1500);
+  <audio id="bgMusic" preload="metadata" crossorigin="anonymous">
+    <source src="https://od.lk/s/M18zMjE2Njk1NDJf/2_5211192676182947688.m4a" type="audio/mp4">
+  </audio>
 
-            const btnSkills = document.getElementById('btn-skills');
-            const btnBack = document.getElementById('btn-back');
-            const homePage = document.getElementById('home-page');
-            const skillsPage = document.getElementById('skills-page');
-            const neonText = document.querySelector('.neon-text');
-            const backgroundText = document.querySelector('.background-text');
-            
-            // عناصر مشغل الموسيقى
-            const playBtn = document.getElementById('playBtn');
-            const bgMusic = document.getElementById('bgMusic');
-            let isPlaying = false;
+  <script>
+    const STORAGE_KEY = "sjd_portfolio_state_v2";
 
-            // التحكم بتشغيل وإيقاف الموسيقى
-            playBtn.addEventListener('click', function() {
-                if (isPlaying) {
-                    bgMusic.pause();
-                    playBtn.innerHTML = '<i class="fas fa-play"></i> play';
-                } else {
-                    bgMusic.play();
-                    playBtn.innerHTML = '<i class="fas fa-pause"></i> stop';
-                }
-                isPlaying = !isPlaying;
-            });
+    const loadState = () => {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null"); }
+      catch { return null; }
+    };
 
-            // ضبط مستوى الصوت الافتراضي
-            bgMusic.volume = 0.5;
+    const saveState = (st) => {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(st)); } catch {}
+    };
 
-            btnSkills.addEventListener('click', ()=>{
-                homePage.style.display='none';
-                skillsPage.style.display='block';
-                // إيقاف حركة الخلفية
-                neonText.classList.add('paused');
-                backgroundText.classList.add('paused');
-            });
+    const playBtn   = document.getElementById("playBtn");
+    const hintText  = document.getElementById("hintText");
+    const focusBtn  = document.getElementById("focusBtn");
+    const vol       = document.getElementById("vol");
+    const music     = document.getElementById("bgMusic");
 
-            btnBack.addEventListener('click', ()=>{
-                skillsPage.style.display='none';
-                homePage.style.display='block';
-                // إعادة تشغيل حركة الخلفية
-                neonText.classList.remove('paused');
-                backgroundText.classList.remove('paused');
-            });
-        });
-    </script>
+    const bgText    = document.getElementById("bgText");
+    const statusPill= document.getElementById("statusPill");
+
+    const canvas = document.getElementById("viz");
+    const ctx2d  = canvas.getContext("2d");
+
+    const profileBtn = document.getElementById("profileBtn");
+    const storyModal = document.getElementById("storyModal");
+    const storyCloseBtn = document.getElementById("storyCloseBtn");
+    const storyVideo = document.getElementById("storyVideo");
+    const storyProgress = document.getElementById("storyProgress");
+    const storyCaption = document.getElementById("storyCaption");
+    const storyHint = document.getElementById("storyHint");
+    const tapPrev = document.getElementById("tapPrev");
+    const tapNext = document.getElementById("tapNext");
+    const storyCard = document.getElementById("storyCard");
+
+    let isPlaying = false;
+    let isFocus   = false;
+    let wantPlayOnLoad = false;
+
+    let audioCtx = null;
+    let analyser = null;
+    let sourceNode = null;
+    let data = null;
+    let rafId = null;
+
+    const BG_LINES = {
+      normal:  "SYSTEM ONLINE — IDENTITY LOADING — SIGNAL STABLE —",
+      playing: "AUDIO ACTIVE — SIGNAL PULSE — SYNCHRONIZED —",
+      focus:   "FOCUS MODE — NOISE REDUCED — CALM STATE —"
+    };
+
+    function renderBG(mode){
+      const base = BG_LINES[mode] || BG_LINES.normal;
+      bgText.textContent = (base + " ").repeat(40);
+      statusPill.textContent = mode.toUpperCase();
+    }
+
+    function wipe(){
+      document.body.classList.add("is-wiping");
+      setTimeout(()=>document.body.classList.remove("is-wiping"), 280);
+    }
+
+    function setFocusUI(focus){
+      isFocus = focus;
+      document.body.classList.toggle("is-focus", focus);
+      focusBtn.setAttribute("aria-pressed", String(focus));
+      focusBtn.innerHTML = focus
+        ? '<i class="fas fa-sun"></i><span style="font-size:.92rem;opacity:.85;">Normal</span>'
+        : '<i class="fas fa-moon"></i><span style="font-size:.92rem;opacity:.85;">Focus</span>';
+
+      wipe();
+      renderBG(isFocus ? "focus" : (isPlaying ? "playing" : "normal"));
+      persist();
+    }
+
+    function setPlayUI(playing){
+      isPlaying = playing;
+      document.body.classList.toggle("is-playing", playing);
+
+      if(playing){
+        playBtn.innerHTML = '<i class="fas fa-pause"></i> <span id="playLabel">stop</span>';
+        hintText.textContent = "";
+      }else{
+        playBtn.innerHTML = '<i class="fas fa-play"></i> <span id="playLabel">play</span>';
+      }
+
+      wipe();
+      renderBG(isFocus ? "focus" : (isPlaying ? "playing" : "normal"));
+      persist();
+    }
+
+    function persist(){
+      saveState({
+        focus: isFocus,
+        volume: Number(vol.value),
+        wantPlay: wantPlayOnLoad || isPlaying
+      });
+    }
+
+    function ensureAudioGraph(){
+      if(audioCtx) return;
+
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.85;
+
+      sourceNode = audioCtx.createMediaElementSource(music);
+      sourceNode.connect(analyser);
+      analyser.connect(audioCtx.destination);
+
+      data = new Uint8Array(analyser.frequencyBinCount);
+    }
+
+    function drawViz(){
+      if(!analyser || !data) return;
+      analyser.getByteFrequencyData(data);
+
+      const W = canvas.width, H = canvas.height;
+      ctx2d.clearRect(0,0,W,H);
+      ctx2d.fillStyle = "rgba(255,255,255,0.02)";
+      ctx2d.fillRect(0,0,W,H);
+
+      const bars = 24;
+      const step = Math.floor(data.length / bars);
+      const gap = 3;
+      const bw = (W - gap*(bars+1)) / bars;
+
+      let energy = 0;
+      for(let i=0;i<bars;i++){
+        const v = data[i*step] / 255;
+        energy += v;
+
+        const x = gap + i*(bw + gap);
+        const barH = Math.max(2, v * (H-8));
+        const y = H - barH - 4;
+
+        ctx2d.fillStyle = `rgba(0,255,255,${0.10 + v*0.45})`;
+        ctx2d.fillRect(x, y, bw, barH);
+      }
+
+      energy = energy / bars;
+
+      if(document.body.classList.contains("is-playing") && !document.body.classList.contains("is-focus")){
+        const scale = 1 + energy * 0.02;
+        document.documentElement.style.setProperty("--dw-scale", String(scale));
+      }else{
+        document.documentElement.style.setProperty("--dw-scale", "1");
+      }
+
+      rafId = requestAnimationFrame(drawViz);
+    }
+
+    function startViz(){
+      stopViz();
+      rafId = requestAnimationFrame(drawViz);
+    }
+
+    function stopViz(){
+      if(rafId){ cancelAnimationFrame(rafId); rafId = null; }
+      ctx2d.clearRect(0,0,canvas.width,canvas.height);
+      ctx2d.fillStyle = "rgba(255,255,255,0.02)";
+      ctx2d.fillRect(0,0,canvas.width,canvas.height);
+      document.documentElement.style.setProperty("--dw-scale", "1");
+    }
+
+    async function tryPlay(){
+      try{
+        ensureAudioGraph();
+        if(audioCtx && audioCtx.state === "suspended"){
+          await audioCtx.resume();
+        }
+        await music.play();
+        setPlayUI(true);
+        startViz();
+      }catch(err){
+        setPlayUI(false);
+        stopViz();
+        hintText.textContent = "Tap play again (browser blocked autoplay).";
+      }
+    }
+
+    function pause(){
+      music.pause();
+      setPlayUI(false);
+      stopViz();
+    }
+
+    /* STORY LIST (2 stories now) */
+    const STORIES = [
+      {
+        type: "video",
+        src: "https://od.lk/s/M18zMjE2ODkyODFf/VID_20251218_004657_034.mp4",
+        caption: "Story 1"
+      },
+      {
+        type: "video",
+        src: "https://od.lk/s/M18zMjE2OTc0MDVf/VID_20251218_012415_499.mp4",
+        caption: "Story 2"
+      }
+    ];
+
+    let storyIndex = 0;
+    let storyRAF = null;
+    let holdPausing = false;
+
+    function buildProgress(){
+      storyProgress.innerHTML = "";
+      for(let i=0;i<STORIES.length;i++){
+        const seg = document.createElement("div");
+        seg.className = "seg";
+        const fill = document.createElement("div");
+        fill.className = "fill";
+        fill.style.width = (i < storyIndex) ? "100%" : "0%";
+        seg.appendChild(fill);
+        storyProgress.appendChild(seg);
+      }
+    }
+
+    function setFill(i, pct){
+      const seg = storyProgress.children[i];
+      if(!seg) return;
+      const fill = seg.querySelector(".fill");
+      if(fill) fill.style.width = `${Math.max(0, Math.min(100, pct))}%`;
+    }
+
+    function stopStoryRAF(){
+      if(storyRAF){ cancelAnimationFrame(storyRAF); storyRAF = null; }
+    }
+
+    function updateStoryProgress(){
+      const item = STORIES[storyIndex];
+      if(!item) return;
+
+      for(let i=0;i<STORIES.length;i++){
+        if(i < storyIndex) setFill(i, 100);
+        if(i > storyIndex) setFill(i, 0);
+      }
+
+      if(item.type === "video"){
+        const d = storyVideo.duration || 0;
+        const t = storyVideo.currentTime || 0;
+        const pct = d > 0 ? (t / d) * 100 : 0;
+        setFill(storyIndex, pct);
+      }
+
+      storyRAF = requestAnimationFrame(updateStoryProgress);
+    }
+
+    async function playStoryVideoSmart(){
+      try{
+        storyVideo.muted = false;
+        await storyVideo.play();
+      }catch{
+        storyVideo.muted = true;
+        try{ await storyVideo.play(); }catch{}
+      }
+    }
+
+    function showPausedUI(paused){
+      document.body.classList.toggle("story-paused", paused);
+      storyHint.textContent = paused ? "Paused" : "";
+    }
+
+    async function showStory(i){
+      if(i < 0) i = 0;
+      if(i >= STORIES.length) i = STORIES.length - 1;
+      storyIndex = i;
+
+      stopStoryRAF();
+      buildProgress();
+
+      const item = STORIES[storyIndex];
+      storyCaption.textContent = item.caption || "";
+
+      storyVideo.pause();
+      storyVideo.removeAttribute("src");
+      storyVideo.load();
+
+      storyVideo.src = item.src;
+      storyVideo.currentTime = 0;
+      storyVideo.loop = false;
+      storyVideo.controls = false;
+
+      showPausedUI(false);
+
+      storyVideo.onloadedmetadata = async () => {
+        await playStoryVideoSmart();
+        stopStoryRAF();
+        storyRAF = requestAnimationFrame(updateStoryProgress);
+      };
+    }
+
+    function openStory(){
+      document.body.classList.add("story-open");
+      storyModal.setAttribute("aria-hidden", "false");
+      showStory(0);
+    }
+
+    function closeStory(){
+      stopStoryRAF();
+      storyVideo.onloadedmetadata = null;
+      storyVideo.pause();
+      storyVideo.removeAttribute("src");
+      storyVideo.load();
+      showPausedUI(false);
+
+      document.body.classList.remove("story-open", "story-paused");
+      storyModal.setAttribute("aria-hidden", "true");
+    }
+
+    function nextStory(){
+      if(storyIndex < STORIES.length - 1) showStory(storyIndex + 1);
+      else closeStory();
+    }
+
+    function prevStory(){
+      if(storyIndex > 0) showStory(storyIndex - 1);
+      else showStory(0);
+    }
+
+    tapNext.addEventListener("click", (e) => { e.stopPropagation(); nextStory(); });
+    tapPrev.addEventListener("click", (e) => { e.stopPropagation(); prevStory(); });
+
+    function holdPauseStart(){
+      if(!document.body.classList.contains("story-open")) return;
+      if(storyVideo.paused) return;
+      holdPausing = true;
+      storyVideo.pause();
+      showPausedUI(true);
+    }
+    function holdPauseEnd(){
+      if(!document.body.classList.contains("story-open")) return;
+      if(!holdPausing) return;
+      holdPausing = false;
+      showPausedUI(false);
+      storyVideo.play().catch(()=>{});
+    }
+
+    storyCard.addEventListener("pointerdown", (e) => {
+      if(e.target === storyCloseBtn) return;
+      holdPauseStart();
+    });
+    storyCard.addEventListener("pointerup", holdPauseEnd);
+    storyCard.addEventListener("pointercancel", holdPauseEnd);
+    storyCard.addEventListener("pointerleave", holdPauseEnd);
+
+    storyVideo.addEventListener("ended", () => nextStory());
+
+    storyCloseBtn.addEventListener("click", (e) => { e.stopPropagation(); closeStory(); });
+    storyModal.addEventListener("click", (e) => { if(e.target === storyModal) closeStory(); });
+
+    window.addEventListener("keydown", (e) => {
+      if(!document.body.classList.contains("story-open")) return;
+      if(e.key === "Escape") closeStory();
+      if(e.key === "ArrowRight") nextStory();
+      if(e.key === "ArrowLeft") prevStory();
+    });
+
+    profileBtn.addEventListener("click", openStory);
+
+    playBtn.addEventListener("click", async () => {
+      if(isPlaying){
+        wantPlayOnLoad = false;
+        pause();
+      }else{
+        wantPlayOnLoad = true;
+        await tryPlay();
+      }
+      persist();
+    });
+
+    focusBtn.addEventListener("click", () => {
+      setFocusUI(!isFocus);
+    });
+
+    vol.addEventListener("input", () => {
+      music.volume = Number(vol.value);
+      persist();
+    });
+
+    music.addEventListener("ended", () => {
+      wantPlayOnLoad = false;
+      pause();
+      persist();
+    });
+
+    (function init(){
+      requestAnimationFrame(()=>document.body.classList.add("is-loaded"));
+
+      const st = loadState();
+      if(st){
+        isFocus = Boolean(st.focus);
+        vol.value = String(typeof st.volume === "number" ? st.volume : 0.5);
+        music.volume = Number(vol.value);
+        wantPlayOnLoad = Boolean(st.wantPlay);
+      }else{
+        music.volume = 0.5;
+        wantPlayOnLoad = false;
+        isFocus = false;
+      }
+
+      setFocusUI(isFocus);
+      renderBG(isFocus ? "focus" : "normal");
+
+      if(wantPlayOnLoad){
+        tryPlay();
+      }else{
+        stopViz();
+      }
+    })();
+  </script>
 </body>
 </html>
+
