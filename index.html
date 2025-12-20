@@ -9,6 +9,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
 
   <style>
+    /* Verified badge (Instagram-like) */
+    .verified-badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:18px;
+      height:18px;
+      margin-left:8px;
+      border-radius:50%;
+      background:#1d9bf0;
+      box-shadow:0 0 0 2px rgba(0,0,0,.65);
+      transform: translateY(2px);
+    }
+    .verified-badge svg{ width:12px;height:12px;display:block; }
+
     :root{
       --primary:#4CAF50;
       --btn:#1565C0;
@@ -107,6 +122,15 @@
     .icon-btn:hover{ transform:translateY(-1px); background:rgba(255,255,255,.09); }
     .icon-btn:active{ transform:translateY(0); opacity:.92; }
 
+    /* NEW: menu button style */
+    .menu-btn{
+      width:44px;
+      height:44px;
+      padding:0;
+      justify-content:center;
+    }
+    .menu-btn i{ font-size:18px; }
+
     .status-pill{
       font-size:.9rem;
       opacity:.7;
@@ -177,6 +201,7 @@
       flex:0 0 22px;
     }
 
+    /* Music section stays visual-only now */
     .music{
       margin-top:18px;
       display:flex;
@@ -184,33 +209,6 @@
       align-items:center;
       gap:10px;
     }
-    .music-btn{
-      background:var(--btn);
-      color:#fff;
-      border:none;
-      padding:10px 18px;
-      border-radius:12px;
-      cursor:pointer;
-      transition:transform .2s ease, filter .2s ease, opacity .2s ease;
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      min-width:140px;
-      justify-content:center;
-      user-select:none;
-    }
-    .music-btn:hover{ transform:translateY(-1px); filter:brightness(1.08); }
-    .music-btn:active{ transform:translateY(0); opacity:.92; }
-
-    .volume-row{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      width:100%;
-      max-width:260px;
-      opacity:.85;
-    }
-    input[type="range"]{ width:100%; accent-color:var(--primary); }
 
     .hint{
       font-size:.9rem;
@@ -365,6 +363,20 @@
       z-index:10;
     }
 
+    .story-delete{
+      position:absolute; top:10px; left:10px;
+      border:none; cursor:pointer;
+      height:36px;
+      padding:0 12px;
+      border-radius:12px;
+      background: rgba(239,68,68,.18);
+      color: rgba(255,255,255,.95);
+      display:flex; align-items:center; justify-content:center;
+      gap:8px;
+      z-index:10;
+    }
+    .story-delete i{ color: rgba(255,255,255,.95); }
+
     .story-caption{
       position:absolute;
       left:0; right:0; bottom:0;
@@ -404,9 +416,192 @@
     }
     body.story-paused .story-hint{ opacity:1; transform:translate(-50%,-50%) scale(1.02); }
 
+    /* ====== Modals (Auth + Upload) ====== */
+    .modal{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.72);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index: 10001;
+      padding: 16px;
+    }
+    .modal.open{ display:flex; }
+
+    .modal-card{
+      width:min(420px, 96vw);
+      background: rgba(15,15,20,.92);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 20px;
+      padding: 14px;
+      box-shadow: 0 30px 90px rgba(0,0,0,.6);
+      text-align:left;
+    }
+    .modal-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .modal-head .x{
+      width:38px;height:38px;
+      border-radius:14px;
+      border:none;
+      cursor:pointer;
+      background: rgba(255,255,255,.10);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .modal input{
+      width:100%;
+      margin-top:10px;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.35);
+      color:#fff;
+      outline:none;
+    }
+    .modal .btn{
+      width:100%;
+      margin-top:10px;
+      padding:12px 12px;
+      border-radius:14px;
+      border:none;
+      cursor:pointer;
+      font-weight:800;
+      background:#22c55e;
+      color:#07130a;
+    }
+    .modal .btn.ghost{
+      background: rgba(255,255,255,.10);
+      color:#fff;
+    }
+    .modal .muted{opacity:.75;margin:0}
+    .modal .err{margin-top:10px;color:#ff6b6b;min-height:1.2em}
+
+    /* ====== NEW: Hamburger Menu Drawer ====== */
+    .menu-overlay{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.55);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .18s ease;
+      z-index: 10002;
+    }
+    body.menu-open .menu-overlay{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .menu-drawer{
+      position:fixed;
+      top:0;
+      left:0;
+      height:100%;
+      width:min(360px, 88vw);
+      background: rgba(15,15,20,.92);
+      border-right: 1px solid rgba(255,255,255,.10);
+      box-shadow: 30px 0 90px rgba(0,0,0,.6);
+      transform: translateX(-105%);
+      transition: transform .22s ease;
+      z-index: 10003;
+      padding: 14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    body.menu-open .menu-drawer{ transform: translateX(0); }
+
+    .menu-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .menu-title{
+      font-weight:800;
+      letter-spacing:.3px;
+    }
+    .menu-close{
+      width:38px;height:38px;
+      border-radius:14px;
+      border:none;
+      cursor:pointer;
+      background: rgba(255,255,255,.10);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .menu-section{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .menu-row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      padding: 10px;
+      border-radius: 14px;
+    }
+    .menu-row .label{
+      opacity:.85;
+      font-weight:700;
+      font-size:.95rem;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .menu-row .label i{ color: rgba(255,255,255,.85); }
+
+    .menu-action{
+      border:none;
+      cursor:pointer;
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,.10);
+      color:#fff;
+      font-weight:800;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      justify-content:center;
+      user-select:none;
+    }
+    .menu-action.primary{
+      background: #22c55e;
+      color:#07130a;
+    }
+    .menu-action.danger{
+      background: rgba(239,68,68,.20);
+    }
+    .menu-action:active{ opacity:.92; }
+
+    .menu-range{
+      width: 160px;
+      accent-color: var(--primary);
+    }
+
+    .hide{ display:none !important; }
+
     @media (prefers-reduced-motion: reduce){
       .bg-rotator{ animation:none !important; }
       .reveal{ transition:none !important; opacity:1; transform:none; }
+      .menu-drawer{ transition:none !important; }
+      .menu-overlay{ transition:none !important; }
     }
   </style>
 </head>
@@ -418,6 +613,54 @@
     </div>
     <div class="state-wipe"></div>
   </div>
+
+  <!-- MENU OVERLAY + DRAWER -->
+  <div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
+  <aside class="menu-drawer" id="menuDrawer" aria-label="Menu" aria-hidden="true">
+    <div class="menu-head">
+      <div class="menu-title">Controls</div>
+      <button class="menu-close" id="menuCloseBtn" type="button" title="Close"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="menu-section">
+      <div class="menu-row">
+        <div class="label"><i class="fas fa-moon"></i> Focus</div>
+        <button class="menu-action" id="focusBtn" type="button" aria-pressed="false" title="Toggle focus">
+          Toggle
+        </button>
+      </div>
+
+      <div class="menu-row">
+        <div class="label"><i class="fas fa-music"></i> Music</div>
+        <button class="menu-action" id="playBtn" type="button" title="Play/Pause">
+          <i class="fas fa-play"></i>
+          <span id="playLabel">play</span>
+        </button>
+      </div>
+
+      <div class="menu-row">
+        <div class="label"><i class="fas fa-volume-up"></i> Volume</div>
+        <input class="menu-range" id="vol" type="range" min="0" max="1" step="0.01" value="0.5" />
+      </div>
+
+      <div class="menu-row">
+        <div class="label"><i class="fas fa-user-shield"></i> Admin</div>
+        <button class="menu-action" id="adminUnlockBtn" type="button">Unlock</button>
+      </div>
+
+      <div class="menu-row" id="adminAddRow">
+        <div class="label"><i class="fas fa-plus"></i> Story</div>
+        <button class="menu-action primary" id="adminAddStoryBtn" type="button">Add Story</button>
+      </div>
+
+      <div class="menu-row" id="adminLogoutRow">
+        <div class="label"><i class="fas fa-right-from-bracket"></i> Admin</div>
+        <button class="menu-action danger" id="adminLogoutBtn" type="button">Logout</button>
+      </div>
+    </div>
+
+    <p class="hint" id="hintText" style="text-align:left;margin-top:auto;"></p>
+  </aside>
 
   <!-- STORY MODAL -->
   <div class="story-modal" id="storyModal" aria-hidden="true">
@@ -444,6 +687,11 @@
         </div>
       </div>
 
+      <button class="story-delete" id="storyDeleteBtn" type="button" title="Delete this story">
+        <i class="fas fa-trash"></i>
+        <span style="font-weight:700;font-size:.9rem;">Delete</span>
+      </button>
+
       <button class="story-close" id="storyCloseBtn" type="button" title="Close story">
         <i class="fas fa-times"></i>
       </button>
@@ -453,11 +701,40 @@
     </div>
   </div>
 
+  <!-- Password Modal (unlock admin) -->
+  <div class="modal" id="authModal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <b>Admin Unlock</b>
+        <button class="x" id="authClose" type="button"><i class="fas fa-times"></i></button>
+      </div>
+      <p class="muted">اكتب كلمة السر حتى تظهر خيارات الأدمن.</p>
+      <input id="adminPass" type="password" placeholder="Password" autocomplete="current-password"/>
+      <button id="authGo" class="btn" type="button">Unlock</button>
+      <div class="err" id="authErr"></div>
+    </div>
+  </div>
+
+  <!-- Upload Modal -->
+  <div class="modal" id="uploadModal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <b>إضافة ستوري</b>
+        <button class="x" id="upClose" type="button"><i class="fas fa-times"></i></button>
+      </div>
+      <p class="muted">الصق رابط فيديو mp4 + كابشن (اختياري). سيُحفظ على هذا الجهاز.</p>
+      <input id="storyUrl" type="url" placeholder="https://...mp4" />
+      <input id="storyCap" type="text" placeholder="Caption (optional)" maxlength="120" />
+      <button id="upSend" class="btn" type="button">Add</button>
+      <button id="upCancel" class="btn ghost" type="button">Cancel</button>
+      <div class="err" id="upErr"></div>
+    </div>
+  </div>
+
   <main class="container">
     <div class="topbar reveal r1">
-      <button class="icon-btn" id="focusBtn" type="button" aria-pressed="false" title="Focus mode">
-        <i class="fas fa-moon"></i>
-        <span style="font-size:.92rem;opacity:.85;">Focus</span>
+      <button class="icon-btn menu-btn" id="menuBtn" type="button" title="Menu" aria-label="Menu">
+        <i class="fas fa-bars"></i>
       </button>
       <div class="status-pill" id="statusPill">NORMAL</div>
     </div>
@@ -468,7 +745,15 @@
       </div>
     </button>
 
-    <h1 class="profile-name reveal r3">Sajad</h1>
+    <h1 class="profile-name reveal r3">
+      Sajad
+      <span class="verified-badge" title="Verified" aria-label="Verified">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M20 6.5L9.5 17 4 11.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </h1>
+
     <p class="profile-title reveal r3">You are your own enemy again</p>
 
     <section class="info-card reveal r4">
@@ -479,19 +764,6 @@
     </section>
 
     <section class="music reveal r5">
-      <button class="music-btn" id="playBtn" type="button">
-        <i class="fas fa-play"></i>
-        <span id="playLabel">play</span>
-      </button>
-
-      <div class="volume-row" title="Volume">
-        <i class="fas fa-volume-down"></i>
-        <input id="vol" type="range" min="0" max="1" step="0.01" value="0.5" />
-        <i class="fas fa-volume-up"></i>
-      </div>
-
-      <div class="hint" id="hintText"></div>
-
       <div class="deathwish-wrap">
         <canvas id="viz" width="320" height="42"></canvas>
         <div class="deathwish">Deathwish</div>
@@ -515,9 +787,11 @@
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(st)); } catch {}
     };
 
-    const playBtn   = document.getElementById("playBtn");
+    /* Elements */
     const hintText  = document.getElementById("hintText");
     const focusBtn  = document.getElementById("focusBtn");
+    const playBtn   = document.getElementById("playBtn");
+    const playLabel = document.getElementById("playLabel");
     const vol       = document.getElementById("vol");
     const music     = document.getElementById("bgMusic");
 
@@ -530,6 +804,7 @@
     const profileBtn = document.getElementById("profileBtn");
     const storyModal = document.getElementById("storyModal");
     const storyCloseBtn = document.getElementById("storyCloseBtn");
+    const storyDeleteBtn = document.getElementById("storyDeleteBtn");
     const storyVideo = document.getElementById("storyVideo");
     const storyProgress = document.getElementById("storyProgress");
     const storyCaption = document.getElementById("storyCaption");
@@ -538,10 +813,39 @@
     const tapNext = document.getElementById("tapNext");
     const storyCard = document.getElementById("storyCard");
 
+    /* Menu */
+    const menuBtn = document.getElementById("menuBtn");
+    const menuDrawer = document.getElementById("menuDrawer");
+    const menuOverlay = document.getElementById("menuOverlay");
+    const menuCloseBtn = document.getElementById("menuCloseBtn");
+
+    /* Admin */
+    const adminUnlockBtn = document.getElementById("adminUnlockBtn");
+    const adminAddStoryBtn = document.getElementById("adminAddStoryBtn");
+    const adminLogoutBtn = document.getElementById("adminLogoutBtn");
+    const adminAddRow = document.getElementById("adminAddRow");
+    const adminLogoutRow = document.getElementById("adminLogoutRow");
+
+    const authModal = document.getElementById("authModal");
+    const uploadModal = document.getElementById("uploadModal");
+    const authClose = document.getElementById("authClose");
+    const authGo = document.getElementById("authGo");
+    const adminPass = document.getElementById("adminPass");
+    const authErr = document.getElementById("authErr");
+
+    const upClose = document.getElementById("upClose");
+    const upCancel = document.getElementById("upCancel");
+    const upSend = document.getElementById("upSend");
+    const storyUrl = document.getElementById("storyUrl");
+    const storyCap = document.getElementById("storyCap");
+    const upErr = document.getElementById("upErr");
+
+    /* State */
     let isPlaying = false;
     let isFocus   = false;
     let wantPlayOnLoad = false;
 
+    /* Audio analysis */
     let audioCtx = null;
     let analyser = null;
     let sourceNode = null;
@@ -569,10 +873,7 @@
       isFocus = focus;
       document.body.classList.toggle("is-focus", focus);
       focusBtn.setAttribute("aria-pressed", String(focus));
-      focusBtn.innerHTML = focus
-        ? '<i class="fas fa-sun"></i><span style="font-size:.92rem;opacity:.85;">Normal</span>'
-        : '<i class="fas fa-moon"></i><span style="font-size:.92rem;opacity:.85;">Focus</span>';
-
+      focusBtn.innerHTML = focus ? "Normal" : "Toggle";
       wipe();
       renderBG(isFocus ? "focus" : (isPlaying ? "playing" : "normal"));
       persist();
@@ -588,7 +889,6 @@
       }else{
         playBtn.innerHTML = '<i class="fas fa-play"></i> <span id="playLabel">play</span>';
       }
-
       wipe();
       renderBG(isFocus ? "focus" : (isPlaying ? "playing" : "normal"));
       persist();
@@ -604,7 +904,6 @@
 
     function ensureAudioGraph(){
       if(audioCtx) return;
-
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       analyser = audioCtx.createAnalyser();
       analyser.fftSize = 256;
@@ -623,6 +922,7 @@
 
       const W = canvas.width, H = canvas.height;
       ctx2d.clearRect(0,0,W,H);
+
       ctx2d.fillStyle = "rgba(255,255,255,0.02)";
       ctx2d.fillRect(0,0,W,H);
 
@@ -691,20 +991,47 @@
       stopViz();
     }
 
-    /* STORY LIST (2 stories now) */
-    const STORIES = [
-      {
-        type: "video",
-        src: "https://od.lk/s/M18zMjE2ODkyODFf/VID_20251218_004657_034.mp4",
-        caption: "Story 1"
-      },
-      {
-        type: "video",
-        src: "https://od.lk/s/M18zMjE2OTc0MDVf/VID_20251218_012415_499.mp4",
-        caption: "Story 2"
-      }
+    /* =========================
+       Stories + Admin
+    ========================== */
+    const ADMIN_PASSWORD = "source";
+    const STORIES_KEY = "SJD_STORIES_LIST_V1";
+    const ADMIN_UNLOCK_KEY = "SJD_ADMIN_UNLOCKED_V1";
+
+    const DEFAULT_STORIES = [
+      { type:"video", src:"https://od.lk/s/M18zMjE2:ODkyODFf/VID_20251218_004657_034.mp4", caption:"Story 1" },
+      { type:"video", src:"https://od.lk/s/M18zMjE2OTc0MDVf/VID_20251218_012415_499.mp4", caption:"Story 2" }
     ];
 
+    function loadStories(){
+      try{
+        const raw = localStorage.getItem(STORIES_KEY);
+        const arr = raw ? JSON.parse(raw) : null;
+        if(Array.isArray(arr) && arr.length) return arr;
+      }catch{}
+      return DEFAULT_STORIES.slice();
+    }
+
+    function saveStories(arr){
+      try{ localStorage.setItem(STORIES_KEY, JSON.stringify(arr)); }catch{}
+    }
+
+    function isAdminUnlocked(){
+      return localStorage.getItem(ADMIN_UNLOCK_KEY) === "1";
+    }
+
+    function setAdminUnlocked(v){
+      if(v) localStorage.setItem(ADMIN_UNLOCK_KEY, "1");
+      else localStorage.removeItem(ADMIN_UNLOCK_KEY);
+      // show/hide admin actions in menu
+      adminAddRow.classList.toggle("hide", !v);
+      adminLogoutRow.classList.toggle("hide", !v);
+      adminUnlockBtn.textContent = v ? "Unlocked" : "Unlock";
+    }
+
+    let STORIES = loadStories();
+
+    /* Story Player */
     let storyIndex = 0;
     let storyRAF = null;
     let holdPausing = false;
@@ -768,6 +1095,11 @@
     }
 
     async function showStory(i){
+      if(!STORIES.length){
+        closeStory();
+        return;
+      }
+
       if(i < 0) i = 0;
       if(i >= STORIES.length) i = STORIES.length - 1;
       storyIndex = i;
@@ -797,6 +1129,11 @@
     }
 
     function openStory(){
+      STORIES = loadStories();
+      if(!STORIES.length){
+        alert("No stories yet.");
+        return;
+      }
       document.body.classList.add("story-open");
       storyModal.setAttribute("aria-hidden", "false");
       showStory(0);
@@ -843,7 +1180,7 @@
     }
 
     storyCard.addEventListener("pointerdown", (e) => {
-      if(e.target === storyCloseBtn) return;
+      if(e.target === storyCloseBtn || e.target === storyDeleteBtn || storyDeleteBtn.contains(e.target)) return;
       holdPauseStart();
     });
     storyCard.addEventListener("pointerup", holdPauseEnd);
@@ -855,15 +1192,61 @@
     storyCloseBtn.addEventListener("click", (e) => { e.stopPropagation(); closeStory(); });
     storyModal.addEventListener("click", (e) => { if(e.target === storyModal) closeStory(); });
 
-    window.addEventListener("keydown", (e) => {
-      if(!document.body.classList.contains("story-open")) return;
-      if(e.key === "Escape") closeStory();
-      if(e.key === "ArrowRight") nextStory();
-      if(e.key === "ArrowLeft") prevStory();
-    });
-
     profileBtn.addEventListener("click", openStory);
 
+    storyDeleteBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if(!isAdminUnlocked()){
+        alert("Admin only.");
+        return;
+      }
+      const ok = confirm("Delete this story?");
+      if(!ok) return;
+
+      STORIES = loadStories();
+      STORIES.splice(storyIndex, 1);
+      saveStories(STORIES);
+
+      if(!STORIES.length){
+        closeStory();
+      }else{
+        const nextIdx = Math.min(storyIndex, STORIES.length - 1);
+        showStory(nextIdx);
+      }
+    });
+
+    /* Modals helpers */
+    function openModal(m){ m.classList.add("open"); m.setAttribute("aria-hidden","false"); }
+    function closeModal(m){ m.classList.remove("open"); m.setAttribute("aria-hidden","true"); }
+
+    function unlockAdminFlow(){
+      authErr.textContent = "";
+      adminPass.value = "";
+      openModal(authModal);
+      adminPass.focus();
+    }
+
+    function isValidUrl(u){
+      try{ new URL(u); return true; }catch{ return false; }
+    }
+
+    /* Menu open/close */
+    function openMenu(){
+      document.body.classList.add("menu-open");
+      menuDrawer.setAttribute("aria-hidden","false");
+      menuOverlay.setAttribute("aria-hidden","false");
+    }
+    function closeMenu(){
+      document.body.classList.remove("menu-open");
+      menuDrawer.setAttribute("aria-hidden","true");
+      menuOverlay.setAttribute("aria-hidden","true");
+    }
+
+    menuBtn.addEventListener("click", openMenu);
+    menuCloseBtn.addEventListener("click", closeMenu);
+    menuOverlay.addEventListener("click", closeMenu);
+
+    /* Controls inside menu */
     playBtn.addEventListener("click", async () => {
       if(isPlaying){
         wantPlayOnLoad = false;
@@ -875,9 +1258,7 @@
       persist();
     });
 
-    focusBtn.addEventListener("click", () => {
-      setFocusUI(!isFocus);
-    });
+    focusBtn.addEventListener("click", () => setFocusUI(!isFocus));
 
     vol.addEventListener("input", () => {
       music.volume = Number(vol.value);
@@ -890,6 +1271,81 @@
       persist();
     });
 
+    /* Admin actions in menu */
+    adminUnlockBtn.addEventListener("click", () => {
+      if(isAdminUnlocked()) return;
+      unlockAdminFlow();
+    });
+
+    adminAddStoryBtn.addEventListener("click", () => {
+      if(!isAdminUnlocked()){
+        unlockAdminFlow();
+        return;
+      }
+      upErr.textContent = "";
+      storyUrl.value = "";
+      storyCap.value = "";
+      openModal(uploadModal);
+      storyUrl.focus();
+    });
+
+    adminLogoutBtn.addEventListener("click", () => {
+      setAdminUnlocked(false);
+      alert("Admin logged out.");
+    });
+
+    /* Auth modal events */
+    authClose.addEventListener("click", () => closeModal(authModal));
+    authModal.addEventListener("click", (e) => { if(e.target === authModal) closeModal(authModal); });
+
+    authGo.addEventListener("click", () => {
+      const pass = adminPass.value.trim();
+      if(pass !== ADMIN_PASSWORD){
+        authErr.textContent = "Wrong password.";
+        return;
+      }
+      setAdminUnlocked(true);
+      closeModal(authModal);
+      alert("Admin unlocked ✅");
+    });
+
+    /* Upload modal events */
+    upClose.addEventListener("click", () => closeModal(uploadModal));
+    upCancel.addEventListener("click", () => closeModal(uploadModal));
+    uploadModal.addEventListener("click", (e) => { if(e.target === uploadModal) closeModal(uploadModal); });
+
+    upSend.addEventListener("click", () => {
+      upErr.textContent = "";
+      const src = storyUrl.value.trim();
+      const caption = storyCap.value.trim().slice(0, 120);
+
+      if(!src || !isValidUrl(src)){
+        upErr.textContent = "Put a valid video URL.";
+        return;
+      }
+
+      STORIES = loadStories();
+      STORIES.unshift({ type:"video", src, caption: caption || "Story" });
+      saveStories(STORIES);
+
+      closeModal(uploadModal);
+      alert("Story added ✅");
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if(document.body.classList.contains("story-open")){
+        if(e.key === "Escape") closeStory();
+        if(e.key === "ArrowRight") nextStory();
+        if(e.key === "ArrowLeft") prevStory();
+      }
+      if(e.key === "Escape"){
+        closeMenu();
+        closeModal(authModal);
+        closeModal(uploadModal);
+      }
+    });
+
+    /* Init */
     (function init(){
       requestAnimationFrame(()=>document.body.classList.add("is-loaded"));
 
@@ -913,6 +1369,9 @@
       }else{
         stopViz();
       }
+
+      // admin rows
+      setAdminUnlocked(isAdminUnlocked());
     })();
   </script>
 </body>
