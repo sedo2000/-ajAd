@@ -9,20 +9,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
 
   <style>
-    /* Verified badge (Instagram-like) */
+    /* Verified badge (shape like your image, no white background) */
     .verified-badge{
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      width:18px;
-      height:18px;
+      width:22px;
+      height:22px;
       margin-left:8px;
-      border-radius:50%;
-      background:#1d9bf0;
-      box-shadow:0 0 0 2px rgba(0,0,0,.65);
-      transform: translateY(2px);
+      transform: translateY(3px);
+      flex:0 0 auto;
     }
-    .verified-badge svg{ width:12px;height:12px;display:block; }
+    .verified-badge svg{ width:22px;height:22px;display:block; }
 
     :root{
       --primary:#4CAF50;
@@ -122,7 +120,7 @@
     .icon-btn:hover{ transform:translateY(-1px); background:rgba(255,255,255,.09); }
     .icon-btn:active{ transform:translateY(0); opacity:.92; }
 
-    /* NEW: menu button style */
+    /* Menu button */
     .menu-btn{
       width:44px;
       height:44px;
@@ -178,7 +176,18 @@
     }
     .profile-pic img{ width:100%;height:100%;object-fit:cover;display:block; }
 
-    .profile-name{ margin-top:16px; font-size:1.9rem; color:var(--primary); }
+    /* Keep badge beside name (not under it) */
+    .profile-name{
+      margin-top:16px;
+      font-size:1.9rem;
+      color:var(--primary);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:0;
+      line-height:1.15;
+      white-space:nowrap;
+    }
     .profile-title{ margin-top:6px; opacity:.75; }
 
     .info-card{
@@ -201,7 +210,6 @@
       flex:0 0 22px;
     }
 
-    /* Music section stays visual-only now */
     .music{
       margin-top:18px;
       display:flex;
@@ -250,10 +258,11 @@
     @media (max-width:768px){ .deathwish{ font-size:3.8rem; } }
     @media (max-width:480px){ .deathwish{ font-size:3rem; } }
 
+    /* Change: make music visualizer smaller */
     #viz{
-      width: 92%;
-      max-width: 320px;
-      height: 42px;
+      width: 86%;
+      max-width: 260px;
+      height: 28px;
       opacity: var(--bars-opacity);
       filter: drop-shadow(0 0 10px rgba(0,255,255,.15));
       border-radius: 12px;
@@ -484,7 +493,7 @@
     .modal .muted{opacity:.75;margin:0}
     .modal .err{margin-top:10px;color:#ff6b6b;min-height:1.2em}
 
-    /* ====== NEW: Hamburger Menu Drawer ====== */
+    /* ====== Hamburger Menu Drawer ====== */
     .menu-overlay{
       position:fixed;
       inset:0;
@@ -577,10 +586,20 @@
       font-weight:800;
       display:flex;
       align-items:center;
-      gap:10px;
+      gap:8px;
       justify-content:center;
       user-select:none;
+      white-space:nowrap;
     }
+
+    /* Change: make the music icon small */
+    .menu-action .fa-music,
+    .menu-action .fa-play,
+    .menu-action .fa-pause{
+      font-size:12px;
+      transform: translateY(1px);
+    }
+
     .menu-action.primary{
       background: #22c55e;
       color:#07130a;
@@ -748,8 +767,10 @@
     <h1 class="profile-name reveal r3">
       Sajad
       <span class="verified-badge" title="Verified" aria-label="Verified">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M20 6.5L9.5 17 4 11.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Instagram-like verified badge shape -->
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <path fill="#1d9bf0" d="M32 4l6 5 7-2 4 7 8 2-1 8 5 6-5 6 1 8-8 2-4 7-7-2-6 5-6-5-7 2-4-7-8-2 1-8-5-6 5-6-1-8 8-2 4-7 7 2z"/>
+          <path fill="#fff" d="M27 40L17 30l4-4 6 6 16-16 4 4z"/>
         </svg>
       </span>
     </h1>
@@ -765,7 +786,8 @@
 
     <section class="music reveal r5">
       <div class="deathwish-wrap">
-        <canvas id="viz" width="320" height="42"></canvas>
+        <!-- canvas attribute size must match css-ish; keep internal resolution reasonable -->
+        <canvas id="viz" width="260" height="28"></canvas>
         <div class="deathwish">Deathwish</div>
       </div>
     </section>
@@ -791,7 +813,6 @@
     const hintText  = document.getElementById("hintText");
     const focusBtn  = document.getElementById("focusBtn");
     const playBtn   = document.getElementById("playBtn");
-    const playLabel = document.getElementById("playLabel");
     const vol       = document.getElementById("vol");
     const music     = document.getElementById("bgMusic");
 
@@ -873,7 +894,7 @@
       isFocus = focus;
       document.body.classList.toggle("is-focus", focus);
       focusBtn.setAttribute("aria-pressed", String(focus));
-      focusBtn.innerHTML = focus ? "Normal" : "Toggle";
+      focusBtn.textContent = focus ? "Normal" : "Toggle";
       wipe();
       renderBG(isFocus ? "focus" : (isPlaying ? "playing" : "normal"));
       persist();
@@ -922,11 +943,10 @@
 
       const W = canvas.width, H = canvas.height;
       ctx2d.clearRect(0,0,W,H);
-
       ctx2d.fillStyle = "rgba(255,255,255,0.02)";
       ctx2d.fillRect(0,0,W,H);
 
-      const bars = 24;
+      const bars = 20;
       const step = Math.floor(data.length / bars);
       const gap = 3;
       const bw = (W - gap*(bars+1)) / bars;
@@ -937,8 +957,8 @@
         energy += v;
 
         const x = gap + i*(bw + gap);
-        const barH = Math.max(2, v * (H-8));
-        const y = H - barH - 4;
+        const barH = Math.max(2, v * (H-6));
+        const y = H - barH - 3;
 
         ctx2d.fillStyle = `rgba(0,255,255,${0.10 + v*0.45})`;
         ctx2d.fillRect(x, y, bw, barH);
@@ -992,23 +1012,27 @@
     }
 
     /* =========================
-       Stories + Admin
+       Stories + Admin (FIXED DELETE)
     ========================== */
-    const ADMIN_PASSWORD = "source";
+    const ADMIN_PASSWORD = "szmhpz11";
     const STORIES_KEY = "SJD_STORIES_LIST_V1";
     const ADMIN_UNLOCK_KEY = "SJD_ADMIN_UNLOCKED_V1";
 
     const DEFAULT_STORIES = [
-      { type:"video", src:"https://od.lk/s/M18zMjE2:ODkyODFf/VID_20251218_004657_034.mp4", caption:"Story 1" },
+      { type:"video", src:"https://od.lk/s/M18zMjE2ODkyODFf/VID_20251218_004657_034.mp4", caption:"Story 1" },
       { type:"video", src:"https://od.lk/s/M18zMjE2OTc0MDVf/VID_20251218_012415_499.mp4", caption:"Story 2" }
     ];
 
+    // ✅ FIX: if localStorage has stories (even empty []), don't fallback to DEFAULT
     function loadStories(){
       try{
         const raw = localStorage.getItem(STORIES_KEY);
-        const arr = raw ? JSON.parse(raw) : null;
-        if(Array.isArray(arr) && arr.length) return arr;
+        if(raw !== null){
+          const arr = JSON.parse(raw);
+          if(Array.isArray(arr)) return arr; // allow []
+        }
       }catch{}
+      // only when nothing saved yet / corrupted
       return DEFAULT_STORIES.slice();
     }
 
@@ -1023,7 +1047,7 @@
     function setAdminUnlocked(v){
       if(v) localStorage.setItem(ADMIN_UNLOCK_KEY, "1");
       else localStorage.removeItem(ADMIN_UNLOCK_KEY);
-      // show/hide admin actions in menu
+
       adminAddRow.classList.toggle("hide", !v);
       adminLogoutRow.classList.toggle("hide", !v);
       adminUnlockBtn.textContent = v ? "Unlocked" : "Unlock";
@@ -1194,6 +1218,7 @@
 
     profileBtn.addEventListener("click", openStory);
 
+    // ✅ Delete story (now actually disappears)
     storyDeleteBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       if(!isAdminUnlocked()){
@@ -1207,12 +1232,13 @@
       STORIES.splice(storyIndex, 1);
       saveStories(STORIES);
 
-      if(!STORIES.length){
+      if(STORIES.length === 0){
         closeStory();
-      }else{
-        const nextIdx = Math.min(storyIndex, STORIES.length - 1);
-        showStory(nextIdx);
+        return;
       }
+
+      const nextIdx = Math.min(storyIndex, STORIES.length - 1);
+      showStory(nextIdx);
     });
 
     /* Modals helpers */
